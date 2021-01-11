@@ -23,7 +23,7 @@ def login():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        conn = mysql.connect(host="localhost", user="davide", password="davide", database="VideoGamesHub")
+        conn = mysql.connect(host="localhost", user="root", password="root", database="VideoGamesHub")
         cur = conn.cursor()
         cur.execute("SELECT username, password FROM utenti WHERE username = %s AND password = PASSWORD(%s)", (username, password))
         if len(cur.fetchall()) > 0:
@@ -49,7 +49,7 @@ def signup():
         email = request.form['email']
         username = request.form['username']
         password = request.form['password']
-        conn = mysql.connect(host="localhost", user="davide", password="davide", database="VideoGamesHub")
+        conn = mysql.connect(host="localhost", user="root", password="root", database="VideoGamesHub")
         cur = conn.cursor()
         try:
             cur.execute("INSERT INTO utenti VALUES ('0',%s,%s,PASSWORD(%s))", (username, email, password))
@@ -65,7 +65,7 @@ def signup():
 @app.route("/<usr>")
 def user(usr):
     if "username" in session:
-        conn=mysql.connect(host="localhost", user="davide", password="davide", database="VideoGamesHub")
+        conn=mysql.connect(host="localhost", user="root", password="root", database="VideoGamesHub")
         cur=conn.cursor()
         cur.execute("SELECT * FROM articoli")
         result = cur.fetchall()
@@ -81,7 +81,7 @@ def admin():
         art = Articolo(request.form['titolo'], request.form['contenuto'], request.form['categoria'], request.files['images'])
         try:
             art.immagine.save(app.config['UPLOADS']+art.immagine.filename)
-            conn=mysql.connect(host="localhost", user="davide", password="davide", database="VideoGamesHub")
+            conn=mysql.connect(host="localhost", user="root", password="root", database="VideoGamesHub")
             cur=conn.cursor()
             cur.execute("INSERT INTO articoli VALUES ('0',%s,%s,%s,%s)", (art.titolo, art.contenuto, art.immagine.filename, art.categoria))
             conn.commit()
@@ -91,10 +91,18 @@ def admin():
             return f"Errore: {e}"
     else:
         if "username" in session:
-            return render_template("admin.html")
+            conn=mysql.connect(host="localhost", user="root", password="root", database="VideoGamesHub")
+            cur=conn.cursor()
+            cur.execute("SELECT nome FROM categorie")
+            ris = cur.fetchall()
+            data = []
+            for i in ris:
+                data.append(i[0])
+            conn.close()
+            return render_template("admin.html", data=data)
         else:
             return redirect(url_for('login'))
 
 
 if __name__ == '__main__':
-    app.run(debug=True, host="0.0.0.0")
+    app.run(debug=True, host="0.0.0.0", ssl_context=("cert.pem", "key.pem"))
