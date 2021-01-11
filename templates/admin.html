@@ -27,8 +27,9 @@
         <textarea name="contenuto" placeholder="Testo articolo" rows="20" cols="40"></textarea><br>
         <input type="file" placeholder="Immagine copertina" name="images"><br>
         <select name="categoria">
-          <option value="videogiochi">Videogiochi</option>
-          <option value="notizie e curiosita">Notizie e curiosità</option>
+          {%for row in data%}
+            <option value={{row}}>{{row}}</option>
+          {%endfor%}
         </select>
         <input type="submit" value="Invia">
     </form>
