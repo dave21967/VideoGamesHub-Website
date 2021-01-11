@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="it" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1" name="viewport" />
+    <link rel="stylesheet" href="{{url_for('static', filename='/css/index.css')}}">
+    <link rel="stylesheet" href="{{url_for('static', filename='/css/menu.css')}}">
+    <script src="{{url_for('static', filename='/javascript/jquery-3.3.1.js/')}}"></script>
+    <script>
+      function fadeH2() {
+        $("#title").hide();
+      }
+      fadeH2();
+    </script>
+    <title>VideoGames Hub - Home</title>
+  </head>
+  <header>
+    <div class="img-block"><img src="{{url_for('static', filename='/images/LOGOsmall.png')}}" alt="VideoGames Hub logo"><br></div>
+    <div class="menu">
+      <button class="menu-btn"> MENU
+        <ul class="menu-content">
+          <li class="active"><a href="#">APP</a></li>
+          <li><a href="{{url_for('login')}}">ACCEDI</a></li>
+          <li><a href="#">GIOCHI</a></li>
+          <li><a href="#">ARTICOLI</a></li>
+          <li><a href="#">CONTATTI</a></li>
+        </ul>
+      </button>
+    </div>
+  </header>
+  <body>
+    <h1>HOME</h1>
+    <h2 id="title">Once upon a time, in a galaxy far far away….ehm ok.
+      <br>Ben arrivati, sono un ne…ehm appassionato di videogiochi e<br>
+      con questo sito spero di condividere con voi i miei progetti e<br>
+      le curiosità sui giochi più conosciuti (ma anche quelli meno noti).<br>
+      Per altre info cercate un po’ sul sito, buon giro!<br>
+      E seguitemi sui social 🙂
+    </h2>
+    <a href="https://www.instagram.com/videogameshub_/"><img class="insta-logo" src="{{url_for('static', filename='/images/instagram.png')}}"></img></a>
+    <a href="https://www.pinterest.it/Johnny_pixelart_01/videogameshub/"><img class="pint-logo" src="{{url_for('static', filename='/images/pinterest.png')}}"></img></a>
+  </body>
+  <footer>
+  </footer>
+</html>

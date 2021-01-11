@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="it" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1" name="viewport" />
+    <link rel="stylesheet" href="{{url_for('static', filename='/css/index.css')}}">
+    <link rel="stylesheet" href="{{url_for('static', filename='/css/menu.css')}}">
+    <script src="{{url_for('static', filename='/javascript/jquery.js')}}"></script>
+    <title>VideoGames Hub - Home</title>
+  </head>
+  <header>
+    <div class="img-block"><img src="{{url_for('static', filename='/images/LOGOsmall.png')}}" alt="VideoGames Hub logo"><br></div>
+    <h1></h1>
+    <div class="menu">
+      <button class="menu-btn"> MENU
+        <ul class="menu-content">
+          <li class="active"><a href="{{url_for('index')}}">HOME</a></li>
+        </ul>
+      </button>
+    </div>
+  </header>
+  <body>
+    <h1>Benvenuto admin</h1>
+    <h3>Qui puoi aggiungere, modificare o rimuovere i tuoi articoli!</h3>
+    <form method="POST" enctype="multipart/form-data">
+        <input name="titolo" placeholder="Titolo dell'articolo"><br>
+        <textarea name="contenuto" placeholder="Testo articolo" rows="20" cols="40"></textarea><br>
+        <input type="file" placeholder="Immagine copertina" name="images"><br>
+        <select name="categoria">
+          <option value="videogiochi">Videogiochi</option>
+          <option value="notizie e curiosita">Notizie e curiosità</option>
+        </select>
+        <input type="submit" value="Invia">
+    </form>
+  </body>
+  <footer>
+
+  </footer>
+</html>
