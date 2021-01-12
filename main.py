@@ -1,6 +1,7 @@
 from flask import Flask, render_template, flash, request, redirect, url_for, make_response, session
 import mysql.connector as mysql
 import base64
+from smtplib import SMTP
 
 class Articolo(object):
     def __init__(self, titolo, contenuto, categoria, immagine):
@@ -55,6 +56,12 @@ def signup():
             cur.execute("INSERT INTO utenti VALUES ('0',%s,%s,PASSWORD(%s))", (username, email, password))
             conn.commit()
             conn.close()
+            mail = SMTP("smtp.gmail.com", 587)
+            mail.ehlo()
+            mail.starttls()
+            mail.login("videogameshub01@gmail.com", "Xcloseconnect68")
+            mail.sendmail("videogameshub01@gmail.com", "davide.costantini2001@gmail.com", "Subject: Nuova iscrizione\n\nUn nuovo utente e' entrato nella community!\n"+username+"")
+            mail.quit()
             session['username'] = username
             return redirect(url_for('user', usr=username))
         except Exception as e:
@@ -73,6 +80,15 @@ def user(usr):
         return render_template("user.html", data=result, name=usr)
     else:
         return redirect(url_for("login"))
+
+@app.route("/articles")
+def articles():
+    conn=mysql.connect(host="localhost", user="root", password="root", database="VideoGamesHub")
+    cur=conn.cursor()
+    cur.execute("SELECT * FROM articoli")
+    result = cur.fetchall()
+    conn.close()
+    return render_template("user.html", data=result, name="")
 
 
 @app.route("/admin", methods=['GET', 'POST'])
