@@ -13,10 +13,15 @@ class Articolo(object):
 app = Flask(__name__)
 app.secret_key = 'hello world!'
 app.config['UPLOADS'] = './static/uploads/'
+app.config['VISITS'] = 0
+app.config['HOSTS'] = []
 
 @app.route("/")
 @app.route("/index")
 def index():
+    if request.host not in app.config['HOSTS']:
+        app.config['HOSTS'].append(request.host)
+        app.config['VISITS'] += 1
     return render_template("index.html")
 
 @app.route("/login", methods=['POST','GET'])
@@ -61,6 +66,7 @@ def signup():
             mail.starttls()
             mail.login("videogameshub01@gmail.com", "Xcloseconnect68")
             mail.sendmail("videogameshub01@gmail.com", "davide.costantini2001@gmail.com", "Subject: Nuova iscrizione\n\nUn nuovo utente e' entrato nella community!\n"+username+"")
+            mail.sendmail("videogameshub01@gmail.com", email, "Subject: Benvenuto"+username+"!\n\nBenvenuto nella nostra community!!!")
             mail.quit()
             session['username'] = username
             return redirect(url_for('user', usr=username))
@@ -91,8 +97,15 @@ def articles():
     return render_template("user.html", data=result, name="")
 
 
-@app.route("/admin", methods=['GET', 'POST'])
+@app.route("/admin")
 def admin():
+    if 'username' in session:
+        return render_template("admin.html", visits=app.config['VISITS'])
+    else:
+        render_template("login.html")
+
+@app.route("/add-article", methods=['GET', 'POST'])
+def add_article():
     if request.method == 'POST':
         art = Articolo(request.form['titolo'], request.form['contenuto'], request.form['categoria'], request.files['images'])
         try:
@@ -115,10 +128,9 @@ def admin():
             for i in ris:
                 data.append(i[0])
             conn.close()
-            return render_template("admin.html", data=data)
+            return render_template("add_article.html", data=data)
         else:
             return redirect(url_for('login'))
-
 
 if __name__ == '__main__':
     app.run(debug=True, host="0.0.0.0", ssl_context=("cert.pem", "key.pem"))
