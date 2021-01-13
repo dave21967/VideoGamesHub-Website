@@ -27,6 +27,11 @@
         <img src="{{url_for('static', filename='uploads/'+row[3])}}">
         <p>{{row[2]}}</p>
         <p>Categoria: {{row[4]}}</p>
+        <form method="POST">
+          <textarea rows="5" cols="10" name="commentText"></textarea>
+          <input type="hidden" name="article_id" value="{{row[0]}}">
+          <input type="submit" value="Commenta">
+        </form>
     {%endfor%}
   </body>
   <footer>
