@@ -17,7 +17,6 @@ app.config['VISITS'] = 0
 app.config['HOSTS'] = []
 
 @app.route("/")
-@app.route("/index")
 def index():
     if request.host not in app.config['HOSTS']:
         app.config['HOSTS'].append(request.host)
@@ -55,10 +54,12 @@ def signup():
         email = request.form['email']
         username = request.form['username']
         password = request.form['password']
+        news_letter = bool(request.form['newsLetter'])
+        print(news_letter)
         conn = mysql.connect(host="localhost", user="root", password="root", database="VideoGamesHub")
         cur = conn.cursor()
         try:
-            cur.execute("INSERT INTO utenti VALUES ('0',%s,%s,PASSWORD(%s))", (username, email, password))
+            cur.execute("INSERT INTO utenti VALUES ('0',%s,%s,PASSWORD(%s),%s)", (username, email, password, news_letter))
             conn.commit()
             conn.close()
             mail = SMTP("smtp.gmail.com", 587)
@@ -75,17 +76,30 @@ def signup():
     else:
         return render_template("signup.html")
 
-@app.route("/<usr>")
+@app.route("/articles/<usr>", methods=['GET', 'POST'])
 def user(usr):
-    if "username" in session:
+    if request.method == "POST":
+        article_id = request.form['article_id']
+        text = request.form['commentText']
         conn=mysql.connect(host="localhost", user="root", password="root", database="VideoGamesHub")
         cur=conn.cursor()
-        cur.execute("SELECT * FROM articoli")
+        cur.execute("SELECT id FROM utenti WHERE username = %s", (usr,))
         result = cur.fetchall()
+        user_id = result[0][0]
+        cur.execute("INSERT INTO commenti VALUES (0,%s,%s,%s)", (article_id, user_id, text))
+        conn.commit()
         conn.close()
-        return render_template("user.html", data=result, name=usr)
+        return redirect(url_for('user', usr=session['username']))
     else:
-        return redirect(url_for("login"))
+        if "username" in session:
+            conn=mysql.connect(host="localhost", user="root", password="root", database="VideoGamesHub")
+            cur=conn.cursor()
+            cur.execute("SELECT * FROM articoli")
+            result = cur.fetchall()
+            conn.close()
+            return render_template("user.html", data=result, name=usr)
+        else:
+            return redirect(url_for("login"))
 
 @app.route("/articles")
 def articles():
@@ -100,7 +114,23 @@ def articles():
 @app.route("/admin")
 def admin():
     if 'username' in session:
-        return render_template("admin.html", visits=app.config['VISITS'])
+        conn=mysql.connect(host="localhost", user="root", password="root", database="VideoGamesHub")
+        cur=conn.cursor()
+        cur.execute("SELECT * FROM utenti WHERE username <> 'admin'")
+        result = cur.fetchall()
+        conn.close()
+        return render_template("admin.html", visits=app.config['VISITS'], data=result)
+    elif request.form['title']:
+        try:
+            title = request.form['title']
+            conn=mysql.connect(host="localhost", user="root", password="root", database="VideoGamesHub")
+            cur=conn.cursor()
+            cur.execute("DELETE FROM articoli WHERE titolo = %s", ())
+            conn.commit()
+            conn.close()
+            return redirect(url_for('admin'))
+        except Exception as e:
+            return f"Errore: {e}"
     else:
         render_template("login.html")
 
@@ -113,6 +143,16 @@ def add_article():
             conn=mysql.connect(host="localhost", user="root", password="root", database="VideoGamesHub")
             cur=conn.cursor()
             cur.execute("INSERT INTO articoli VALUES ('0',%s,%s,%s,%s)", (art.titolo, art.contenuto, art.immagine.filename, art.categoria))
+            cur.execute("SELECT email FROM utenti WHERE username <> 'admin' AND newsletter = 1")
+            emails = cur.fetchall()
+            if len(emails) > 0:
+                m = SMTP("smtp.gmail.com", 587)
+                m.ehlo()
+                m.starttls()
+                m.login("videogameshub01@gmail.com", "Xcloseconnect68")
+                for mail in emails[0]:
+                    m.sendmail("videogameshub01@gmail.com", mail, "Subject: Nuovo articolo\n\nE' stato pubblicato un nuovo articolo!\nGuardalo subito")
+                m.quit()
             conn.commit()
             conn.close()
             return redirect(url_for('admin'))
@@ -132,5 +172,18 @@ def add_article():
         else:
             return redirect(url_for('login'))
 
+@app.route("/delete-article", methods=['GET', 'POST'])
+def delete_article():
+    try:
+        title = request.form['title']
+        conn=mysql.connect(host="localhost", user="root", password="root", database="VideoGamesHub")
+        cur=conn.cursor()
+        cur.execute("DELETE FROM articoli WHERE titolo = %s", (title,))
+        conn.commit()
+        conn.close()
+        return redirect(url_for('admin'))
+    except Exception as e:
+        return f"Errore: {e}"
+
 if __name__ == '__main__':
-    app.run(debug=True, host="0.0.0.0", ssl_context=("cert.pem", "key.pem"))
+    app.run(debug=True, host="0.0.0.0")
