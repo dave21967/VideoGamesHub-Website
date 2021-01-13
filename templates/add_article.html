@@ -15,21 +15,27 @@
       <button class="menu-btn"> MENU
         <ul class="menu-content">
           <li class="active"><a href="{{url_for('index')}}">HOME</a></li>
-          <li><a href="{{url_for('logout')}}">LOGOUT</a></li>
+          <li><a href="{{url_for('admin')}}">AMMINISTRAZIONE</a></li>
         </ul>
       </button>
     </div>
-    <h3>{{name}}</h3>
   </header>
   <body>
-    {%for row in data%}
-        <h1>{{row[1]}}</h1>
-        <img src="{{url_for('static', filename='uploads/'+row[3])}}">
-        <p>{{row[2]}}</p>
-        <p>Categoria: {{row[4]}}</p>
-    {%endfor%}
+    <h1>Benvenuto admin</h1>
+    <h3>Aggiungi articolo</h3>
+    <form method="POST" enctype="multipart/form-data">
+        <input name="titolo" placeholder="Titolo dell'articolo"><br>
+        <textarea name="contenuto" placeholder="Testo articolo" rows="20" cols="40"></textarea><br>
+        <input type="file" placeholder="Immagine copertina" name="images"><br>
+        <select name="categoria">
+          {%for row in data%}
+            <option value={{row}}>{{row}}</option>
+          {%endfor%}
+        </select>
+        <input type="submit" value="Invia">
+    </form>
   </body>
   <footer>
-    
+
   </footer>
 </html>
