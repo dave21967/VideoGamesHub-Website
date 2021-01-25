@@ -3,6 +3,9 @@ import mysql.connector as mysql
 import base64
 from smtplib import SMTP
 
+mysql_user = "davide"
+mysql_password = "davide"
+
 class Articolo(object):
     def __init__(self, titolo, contenuto, categoria, immagine):
         self.titolo = titolo
@@ -23,12 +26,16 @@ def index():
         app.config['VISITS'] += 1
     return render_template("index.html")
 
+@app.route("/contacts")
+def contacts():
+    return render_template('contacts.html')
+
 @app.route("/login", methods=['POST','GET'])
 def login():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        conn = mysql.connect(host="localhost", user="root", password="root", database="VideoGamesHub")
+        conn = mysql.connect(host="localhost", user=mysql_user, password=mysql_password, database="VideoGamesHub")
         cur = conn.cursor()
         cur.execute("SELECT username, password FROM utenti WHERE username = %s AND password = PASSWORD(%s)", (username, password))
         if len(cur.fetchall()) > 0:
@@ -56,7 +63,7 @@ def signup():
         password = request.form['password']
         news_letter = bool(request.form['newsLetter'])
         print(news_letter)
-        conn = mysql.connect(host="localhost", user="root", password="root", database="VideoGamesHub")
+        conn = mysql.connect(host="localhost", user=mysql_user, password=mysql_password, database="VideoGamesHub")
         cur = conn.cursor()
         try:
             cur.execute("INSERT INTO utenti VALUES ('0',%s,%s,PASSWORD(%s),%s)", (username, email, password, news_letter))
@@ -81,7 +88,7 @@ def user(usr):
     if request.method == "POST":
         article_id = request.form['article_id']
         text = request.form['commentText']
-        conn=mysql.connect(host="localhost", user="root", password="root", database="VideoGamesHub")
+        conn=mysql.connect(host="localhost", user=mysql_user, password=mysql_password, database="VideoGamesHub")
         cur=conn.cursor()
         cur.execute("SELECT id FROM utenti WHERE username = %s", (usr,))
         result = cur.fetchall()
@@ -92,7 +99,7 @@ def user(usr):
         return redirect(url_for('user', usr=session['username']))
     else:
         if "username" in session:
-            conn=mysql.connect(host="localhost", user="root", password="root", database="VideoGamesHub")
+            conn=mysql.connect(host="localhost", user=mysql_user, password=mysql_password, database="VideoGamesHub")
             cur=conn.cursor()
             cur.execute("SELECT * FROM articoli")
             result = cur.fetchall()
@@ -103,7 +110,7 @@ def user(usr):
 
 @app.route("/articles")
 def articles():
-    conn=mysql.connect(host="localhost", user="root", password="root", database="VideoGamesHub")
+    conn=mysql.connect(host="localhost", user=mysql_user, password=mysql_password, database="VideoGamesHub")
     cur=conn.cursor()
     cur.execute("SELECT * FROM articoli")
     result = cur.fetchall()
@@ -114,16 +121,18 @@ def articles():
 @app.route("/admin")
 def admin():
     if 'username' in session:
-        conn=mysql.connect(host="localhost", user="root", password="root", database="VideoGamesHub")
+        conn=mysql.connect(host="localhost", user=mysql_user, password=mysql_password, database="VideoGamesHub")
         cur=conn.cursor()
         cur.execute("SELECT * FROM utenti WHERE username <> 'admin'")
         result = cur.fetchall()
+        cur.execute("SELECT titolo,categoria,data_pubblicazione FROM articoli")
+        arts = cur.fetchall()
         conn.close()
-        return render_template("admin.html", visits=app.config['VISITS'], data=result)
+        return render_template("admin.html", visits=app.config['VISITS'], data=result, articles=arts)
     elif request.form['title']:
         try:
             title = request.form['title']
-            conn=mysql.connect(host="localhost", user="root", password="root", database="VideoGamesHub")
+            conn=mysql.connect(host="localhost", user=mysql_user, password=mysql_password, database="VideoGamesHub")
             cur=conn.cursor()
             cur.execute("DELETE FROM articoli WHERE titolo = %s", ())
             conn.commit()
@@ -140,9 +149,9 @@ def add_article():
         art = Articolo(request.form['titolo'], request.form['contenuto'], request.form['categoria'], request.files['images'])
         try:
             art.immagine.save(app.config['UPLOADS']+art.immagine.filename)
-            conn=mysql.connect(host="localhost", user="root", password="root", database="VideoGamesHub")
+            conn=mysql.connect(host="localhost", user=mysql_user, password=mysql_password, database="VideoGamesHub")
             cur=conn.cursor()
-            cur.execute("INSERT INTO articoli VALUES ('0',%s,%s,%s,%s)", (art.titolo, art.contenuto, art.immagine.filename, art.categoria))
+            cur.execute("INSERT INTO articoli VALUES ('0',%s,%s,%s,%s, NOW())", (art.titolo, art.contenuto, art.immagine.filename, art.categoria))
             cur.execute("SELECT email FROM utenti WHERE username <> 'admin' AND newsletter = 1")
             emails = cur.fetchall()
             if len(emails) > 0:
@@ -160,7 +169,7 @@ def add_article():
             return f"Errore: {e}"
     else:
         if "username" in session:
-            conn=mysql.connect(host="localhost", user="root", password="root", database="VideoGamesHub")
+            conn=mysql.connect(host="localhost", user=mysql_user, password=mysql_password, database="VideoGamesHub")
             cur=conn.cursor()
             cur.execute("SELECT nome FROM categorie")
             ris = cur.fetchall()
@@ -176,7 +185,7 @@ def add_article():
 def delete_article():
     try:
         title = request.form['title']
-        conn=mysql.connect(host="localhost", user="root", password="root", database="VideoGamesHub")
+        conn=mysql.connect(host="localhost", user=mysql_user, password=mysql_password, database="VideoGamesHub")
         cur=conn.cursor()
         cur.execute("DELETE FROM articoli WHERE titolo = %s", (title,))
         conn.commit()
