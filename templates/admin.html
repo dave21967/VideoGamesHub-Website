@@ -32,6 +32,21 @@
         <li style="color: blue;">{{user[1]}}</li>
       {%endfor%}
     </ul>
+    <h3>Articoli</h3>
+    <table border="1px">
+      <tr>
+        <th>Titolo</th>
+        <th>Categoria</th>
+        <th>Data pubblicazione</th>
+      </tr>
+      {%for a in articles%}
+          <tr>
+            <td>{{a[0]}}</td>
+            <td>{{a[1]}}</td>
+            <td>{{a[2]}}</td>
+          </tr>
+      {%endfor%}
+    </table>
   </body>
   <footer>
   </footer>
