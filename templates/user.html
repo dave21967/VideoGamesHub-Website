@@ -23,11 +23,11 @@
   </header>
   <body>
     {%for row in data%}
-        <h1>{{row[1]}}</h1>
+      <a style="color: blue;" href="/articles/view/{{row[1]}}"><h1>{{row[1]}}</h1></a>      
         <img src="{{url_for('static', filename='uploads/'+row[3])}}">
-        <p>{{row[2]}}</p>
         <p>Categoria: {{row[4]}}</p>
         <p>Data pubblicazione: {{row[5]}}</p>
+        <p>Visualizzazioni: {{row[6]}}</p>
     {%endfor%}
   </body>
   <footer>
