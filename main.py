@@ -181,18 +181,16 @@ def add_article():
         else:
             return redirect(url_for('login'))
 
-@app.route("/delete-article", methods=['GET', 'POST'])
-def delete_article():
-    try:
-        title = request.form['title']
-        conn=mysql.connect(host="localhost", user=mysql_user, password=mysql_password, database="VideoGamesHub")
-        cur=conn.cursor()
-        cur.execute("DELETE FROM articoli WHERE titolo = %s", (title,))
-        conn.commit()
-        conn.close()
-        return redirect(url_for('admin'))
-    except Exception as e:
-        return f"Errore: {e}"
+@app.route("/articles/view/<title>")
+def view_article(title):
+    conn=mysql.connect(host="localhost", user=mysql_user, password=mysql_password, database="VideoGamesHub")
+    cur=conn.cursor()
+    cur.execute("SELECT * FROM articoli")
+    result = cur.fetchall()
+    cur.execute("UPDATE articoli SET visualizzazioni = visualizzazioni + 1 WHERE titolo = %s", (title, ))
+    conn.commit()
+    conn.close()
+    return render_template("article.html", title=title, content=f"{result[0][2]}")
 
 if __name__ == '__main__':
     app.run(debug=True, host="0.0.0.0")
