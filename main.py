@@ -185,7 +185,7 @@ def add_article():
 def view_article(title):
     conn=mysql.connect(host="localhost", user=mysql_user, password=mysql_password, database="VideoGamesHub")
     cur=conn.cursor()
-    cur.execute("SELECT * FROM articoli")
+    cur.execute("SELECT * FROM articoli WHERE titolo = %s", (title, ))
     result = cur.fetchall()
     cur.execute("UPDATE articoli SET visualizzazioni = visualizzazioni + 1 WHERE titolo = %s", (title, ))
     conn.commit()
