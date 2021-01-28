@@ -61,27 +61,28 @@ def signup():
         email = request.form['email']
         username = request.form['username']
         password = request.form['password']
-        news_letter = bool(request.form['newsLetter'])
-        print(news_letter)
-        conn = mysql.connect(host="localhost", user=mysql_user, password=mysql_password, database="VideoGamesHub")
-        cur = conn.cursor()
-        try:
-            cur.execute("INSERT INTO utenti VALUES ('0',%s,%s,PASSWORD(%s),%s)", (username, email, password, news_letter))
-            conn.commit()
-            conn.close()
-            mail = SMTP("smtp.gmail.com", 587)
-            mail.ehlo()
-            mail.starttls()
-            mail.login("videogameshub01@gmail.com", "Xcloseconnect68")
-            mail.sendmail("videogameshub01@gmail.com", "davide.costantini2001@gmail.com", "Subject: Nuova iscrizione\n\nUn nuovo utente e' entrato nella community!\n"+username+"")
-            mail.sendmail("videogameshub01@gmail.com", email, "Subject: Benvenuto"+username+"!\n\nBenvenuto nella nostra community!!!")
-            mail.quit()
-            session['username'] = username
-            return redirect(url_for('user', usr=username))
-        except Exception as e:
-            return f"Errore: {e}"
+        if not email or not password or not username:
+            return render_template("signup.html", error="Tutti i campi sono obbligatori")
+        else:
+            conn = mysql.connect(host="localhost", user=mysql_user, password=mysql_password, database="VideoGamesHub")
+            cur = conn.cursor()
+            try:
+                cur.execute("INSERT INTO utenti VALUES ('0',%s,%s,PASSWORD(%s),1)", (username, email, password))
+                conn.commit()
+                conn.close()
+                mail = SMTP("smtp.gmail.com", 587)
+                mail.ehlo()
+                mail.starttls()
+                mail.login("videogameshub01@gmail.com", "Xcloseconnect68")
+                mail.sendmail("videogameshub01@gmail.com", "davide.costantini2001@gmail.com", "Subject: Nuova iscrizione\n\nUn nuovo utente e' entrato nella community!\n"+username+"")
+                mail.sendmail("videogameshub01@gmail.com", email, "Subject: Benvenuto"+username+"!\n\nBenvenuto nella nostra community!!!")
+                mail.quit()
+                session['username'] = username
+                return redirect(url_for('user', usr=username))
+            except Exception as e:
+                return render_template("signup.html", error=f"Errore: {e}")
     else:
-        return render_template("signup.html")
+        return render_template("signup.html", error="")
 
 @app.route("/articles/<usr>", methods=['GET', 'POST'])
 def user(usr):
@@ -185,7 +186,7 @@ def add_article():
 def view_article(title):
     conn=mysql.connect(host="localhost", user=mysql_user, password=mysql_password, database="VideoGamesHub")
     cur=conn.cursor()
-    cur.execute("SELECT * FROM articoli WHERE titolo = %s", (title, ))
+    cur.execute("SELECT * FROM articoli WHERE titolo = %s", (title,))
     result = cur.fetchall()
     cur.execute("UPDATE articoli SET visualizzazioni = visualizzazioni + 1 WHERE titolo = %s", (title, ))
     conn.commit()
