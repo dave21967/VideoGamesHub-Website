@@ -26,8 +26,9 @@
       <input class="email-input" type="email" placeholder="Email" name="email"><br>
       <input class="username-input" type="text" placeholder="Username" name="username"><br>
       <input class="passwd-input" type="password" placeholder="Password" name="password"><br>
-      <input type="checkbox" name="newsLetter"><label style="font-size: 80%;">Desidero rimanere aggiornato sui contenuti di questo sito<br>Controllare lo spam in caso di mancata ricezione delle mail di notifica!</label><br>
-      <input class="login-btn" type="submit" value="Registrati">
+      <label style="font-size: 80%;">Desidero rimanere aggiornato sui contenuti di questo sito<br>Controllare lo spam in caso di mancata ricezione delle mail di notifica!</label><br>
+      <input class="login-btn" type="submit" value="Registrati"><br>
+      <label style="color: red;">{{error}}</label>
       <a class="signup-link" href="{{url_for('login')}}"><p>Sei già registrato?</p></a>
     </form>
   </body>
