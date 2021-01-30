@@ -1,10 +1,11 @@
 from flask import Flask, render_template, flash, request, redirect, url_for, make_response, session
 import mysql.connector as mysql
-import base64
 from smtplib import SMTP
+from threading import Thread
+from datetime import *
 
-mysql_user = "davide"
-mysql_password = "davide"
+mysql_user = "root"
+mysql_password = None
 
 class Articolo(object):
     def __init__(self, titolo, contenuto, categoria, immagine):
@@ -102,7 +103,7 @@ def user(usr):
         if "username" in session:
             conn=mysql.connect(host="localhost", user=mysql_user, password=mysql_password, database="VideoGamesHub")
             cur=conn.cursor()
-            cur.execute("SELECT * FROM articoli")
+            cur.execute("SELECT * FROM articoli ORDER BY visualizzazioni")
             result = cur.fetchall()
             conn.close()
             return render_template("user.html", data=result, name=usr)
@@ -113,7 +114,7 @@ def user(usr):
 def articles():
     conn=mysql.connect(host="localhost", user=mysql_user, password=mysql_password, database="VideoGamesHub")
     cur=conn.cursor()
-    cur.execute("SELECT * FROM articoli")
+    cur.execute("SELECT * FROM articoli ORDER BY visualizzazioni")
     result = cur.fetchall()
     conn.close()
     return render_template("user.html", data=result, name="")
@@ -130,19 +131,8 @@ def admin():
         arts = cur.fetchall()
         conn.close()
         return render_template("admin.html", visits=app.config['VISITS'], data=result, articles=arts)
-    elif request.form['title']:
-        try:
-            title = request.form['title']
-            conn=mysql.connect(host="localhost", user=mysql_user, password=mysql_password, database="VideoGamesHub")
-            cur=conn.cursor()
-            cur.execute("DELETE FROM articoli WHERE titolo = %s", ())
-            conn.commit()
-            conn.close()
-            return redirect(url_for('admin'))
-        except Exception as e:
-            return f"Errore: {e}"
     else:
-        render_template("login.html")
+        return redirect(url_for("login"))
 
 @app.route("/add-article", methods=['GET', 'POST'])
 def add_article():
@@ -192,6 +182,26 @@ def view_article(title):
     conn.commit()
     conn.close()
     return render_template("article.html", title=title, content=f"{result[0][2]}")
+
+@app.route("/<usr>/myProfile", methods=["GET", "POST"])
+def profile(usr):
+    if "username" in session:
+        if request.method == "POST":
+            uname = request.form['username']
+            passwd = request.form['password']
+            try:
+                conn=mysql.connect(host="localhost", user=mysql_user, password=mysql_password, database="VideoGamesHub")
+                cur=conn.cursor()
+                cur.execute("UPDATE utenti SET username = %s, password = PASSWORD(%s) WHERE username = %s", (uname, passwd, usr,))
+                conn.commit()
+                conn.close()
+                return redirect(url_for("articles"))
+            except Exception as e:
+                return "Errore: "+str(e)
+        else:
+            return render_template("profile.html", username=usr)
+    else:
+        return redirect(url_for("login"))
 
 if __name__ == '__main__':
     app.run(debug=True, host="0.0.0.0")
