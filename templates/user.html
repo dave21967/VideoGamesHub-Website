@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="{{url_for('static', filename='/css/index.css')}}">
     <link rel="stylesheet" href="{{url_for('static', filename='/css/menu.css')}}">
     <script src="{{url_for('static', filename='/javascript/jquery.js')}}"></script>
-    <title>VideoGames Hub - {{name}}</title>
+    <title>VideoGames Hub - Articoli</title>
   </head>
   <header>
     <div class="img-block"><img src="{{url_for('static', filename='/images/LOGOsmall.png')}}" alt="VideoGames Hub logo"><br></div>
@@ -23,6 +23,10 @@
     <h3>{{name}}</h3>
   </header>
   <body>
+    <form method="GET">
+      <input type="text" name="titolo" placeholder="Cerca articolo">
+      <input id="search-button" type="submit" value="Cerca">
+    </form>
     {%for row in data%}
       <a style="color: blue;" href="/articles/view/{{row[1]}}"><h1>{{row[1]}}</h1></a>      
         <img src="{{url_for('static', filename='uploads/'+row[3])}}">
