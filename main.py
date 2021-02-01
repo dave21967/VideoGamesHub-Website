@@ -110,13 +110,21 @@ def user(usr):
         else:
             return redirect(url_for("login"))
 
-@app.route("/articles")
+@app.route("/articles", methods=["GET", "POST"])
 def articles():
-    conn=mysql.connect(host="localhost", user=mysql_user, password=mysql_password, database="VideoGamesHub")
-    cur=conn.cursor()
-    cur.execute("SELECT * FROM articoli ORDER BY visualizzazioni")
-    result = cur.fetchall()
-    conn.close()
+    if request.args.get("titolo"):
+        title = request.args.get("titolo")
+        conn=mysql.connect(host="localhost", user=mysql_user, password=mysql_password, database="VideoGamesHub")
+        cur=conn.cursor()
+        cur.execute("SELECT * FROM articoli WHERE titolo = %s ORDER BY visualizzazioni", (title, ))
+        result = cur.fetchall()
+        conn.close()
+    else:
+        conn=mysql.connect(host="localhost", user=mysql_user, password=mysql_password, database="VideoGamesHub")
+        cur=conn.cursor()
+        cur.execute("SELECT * FROM articoli ORDER BY visualizzazioni")
+        result = cur.fetchall()
+        conn.close()
     return render_template("user.html", data=result, name="")
 
 
