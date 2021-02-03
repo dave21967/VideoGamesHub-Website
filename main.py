@@ -3,6 +3,7 @@ import mysql.connector as mysql
 from smtplib import SMTP
 from threading import Thread
 from datetime import *
+from admin import admin
 
 mysql_user = "root"
 mysql_password = None
@@ -19,6 +20,8 @@ app.secret_key = 'hello world!'
 app.config['UPLOADS'] = './static/uploads/'
 app.config['VISITS'] = 0
 app.config['HOSTS'] = []
+
+app.register_blueprint(admin, url_prefix="/admin")
 
 @app.route("/")
 def index():
@@ -43,7 +46,7 @@ def login():
             conn.close()
             session['username'] = username
             if username == 'admin':
-                return redirect(url_for('admin'))
+                return redirect(url_for('admin.index'))
             else:
                 return redirect(url_for('user', usr=username))
         else:
@@ -106,9 +109,16 @@ def user(usr):
             cur.execute("SELECT * FROM articoli ORDER BY visualizzazioni")
             result = cur.fetchall()
             conn.close()
+            if request.args.get("titolo"):
+                title = request.args.get("titolo")
+                conn=mysql.connect(host="localhost", user=mysql_user, password=mysql_password, database="VideoGamesHub")
+                cur=conn.cursor()
+                cur.execute("SELECT * FROM articoli WHERE titolo = %s ORDER BY visualizzazioni", (title, ))
+                result = cur.fetchall()
+                conn.close()
             return render_template("user.html", data=result, name=usr)
         else:
-            return redirect(url_for("login"))
+            return redirect(url_for("articles"))
 
 @app.route("/articles", methods=["GET", "POST"])
 def articles():
@@ -126,59 +136,6 @@ def articles():
         result = cur.fetchall()
         conn.close()
     return render_template("user.html", data=result, name="")
-
-
-@app.route("/admin")
-def admin():
-    if 'username' in session:
-        conn=mysql.connect(host="localhost", user=mysql_user, password=mysql_password, database="VideoGamesHub")
-        cur=conn.cursor()
-        cur.execute("SELECT * FROM utenti WHERE username <> 'admin'")
-        result = cur.fetchall()
-        cur.execute("SELECT titolo,categoria,data_pubblicazione FROM articoli")
-        arts = cur.fetchall()
-        conn.close()
-        return render_template("admin.html", visits=app.config['VISITS'], data=result, articles=arts)
-    else:
-        return redirect(url_for("login"))
-
-@app.route("/add-article", methods=['GET', 'POST'])
-def add_article():
-    if request.method == 'POST':
-        art = Articolo(request.form['titolo'], request.form['contenuto'], request.form['categoria'], request.files['images'])
-        try:
-            art.immagine.save(app.config['UPLOADS']+art.immagine.filename)
-            conn=mysql.connect(host="localhost", user=mysql_user, password=mysql_password, database="VideoGamesHub")
-            cur=conn.cursor()
-            cur.execute("INSERT INTO articoli VALUES ('0',%s,%s,%s,%s, NOW())", (art.titolo, art.contenuto, art.immagine.filename, art.categoria))
-            cur.execute("SELECT email FROM utenti WHERE username <> 'admin' AND newsletter = 1")
-            emails = cur.fetchall()
-            if len(emails) > 0:
-                m = SMTP("smtp.gmail.com", 587)
-                m.ehlo()
-                m.starttls()
-                m.login("videogameshub01@gmail.com", "Xcloseconnect68")
-                for mail in emails[0]:
-                    m.sendmail("videogameshub01@gmail.com", mail, "Subject: Nuovo articolo\n\nE' stato pubblicato un nuovo articolo!\nGuardalo subito")
-                m.quit()
-            conn.commit()
-            conn.close()
-            return redirect(url_for('admin'))
-        except Exception as e:
-            return f"Errore: {e}"
-    else:
-        if "username" in session:
-            conn=mysql.connect(host="localhost", user=mysql_user, password=mysql_password, database="VideoGamesHub")
-            cur=conn.cursor()
-            cur.execute("SELECT nome FROM categorie")
-            ris = cur.fetchall()
-            data = []
-            for i in ris:
-                data.append(i[0])
-            conn.close()
-            return render_template("add_article.html", data=data)
-        else:
-            return redirect(url_for('login'))
 
 @app.route("/articles/view/<title>")
 def view_article(title):
