@@ -1,5 +1,3 @@
-
-
 h1 {
   position: relative;
   left: 48%;
@@ -13,8 +11,15 @@ h2 {
   font-family: sans-serif;
 }
 
-.active {
+#search-button {
+  background-color: #353E49;
+  border-radius: 10%;
+  color: white;
+}
 
+#search-button:hover {
+  background-color: white;
+  color: black;
 }
 
 .img-block {
@@ -48,6 +53,16 @@ img {
     left: 44%;
     color: #ffffff;
     font-size: 90%;
+  }
+
+  .search-bar {
+    width: 100%;
+    height: 30%;
+  }
+
+  #search-button {
+    width: 100%;
+    height: 30%;
   }
 
   img {
