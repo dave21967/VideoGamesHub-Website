@@ -4,16 +4,10 @@ from smtplib import SMTP
 from threading import Thread
 from datetime import *
 from admin import admin
+from model import Articolo
 
 mysql_user = "root"
 mysql_password = None
-
-class Articolo(object):
-    def __init__(self, titolo, contenuto, categoria, immagine):
-        self.titolo = titolo
-        self.contenuto = contenuto
-        self.categoria = categoria
-        self.immagine = immagine
 
 app = Flask(__name__)
 app.secret_key = 'hello world!'
@@ -23,16 +17,37 @@ app.config['HOSTS'] = []
 
 app.register_blueprint(admin, url_prefix="/admin")
 
-@app.route("/")
+@app.route("/", methods=["GET", "POST"])
 def index():
     if request.host not in app.config['HOSTS']:
         app.config['HOSTS'].append(request.host)
         app.config['VISITS'] += 1
-    return render_template("index.html")
+    if request.method == "POST":
+        question = request.form.get("question")
+        mail = SMTP("smtp.gmail.com", 587)
+        mail.ehlo()
+        mail.starttls()
+        mail.login("videogameshub01@gmail.com", "Xcloseconnect68")
+        mail.sendmail("videogameshub01@gmail.com", "davide.costantini2001@gmail.com", "Subject: Nuova domanda\n\nUn utente ha posto la seguente domanda\n"+question+"")
+        mail.quit()
+        return render_template("index.html")
+    else:
+        return render_template("index.html")
 
-@app.route("/contacts")
+@app.route("/contacts", methods=["GET", "POST"])
 def contacts():
-    return render_template('contacts.html')
+    if request.method == "POST":
+        if request.method == "POST":
+            problem = request.form.get("problem")
+            mail = SMTP("smtp.gmail.com", 587)
+            mail.ehlo()
+            mail.starttls()
+            mail.login("videogameshub01@gmail.com", "Xcloseconnect68")
+            mail.sendmail("videogameshub01@gmail.com", "davide.costantini2001@gmail.com", "Subject: E' stato segnalato un problema\n\nUn utente ha segnalato un problema\n"+problem+"")
+            mail.quit()
+            return render_template("contacts.html")
+    else:
+        return render_template('contacts.html')
 
 @app.route("/login", methods=['POST','GET'])
 def login():
@@ -90,49 +105,52 @@ def signup():
 
 @app.route("/articles/<usr>", methods=['GET', 'POST'])
 def user(usr):
-    if request.method == "POST":
-        article_id = request.form['article_id']
-        text = request.form['commentText']
+    if "username" in session:
         conn=mysql.connect(host="localhost", user=mysql_user, password=mysql_password, database="VideoGamesHub")
         cur=conn.cursor()
-        cur.execute("SELECT id FROM utenti WHERE username = %s", (usr,))
+        cur.execute("SELECT * FROM articoli ORDER BY data_pubblicazione DESC")
         result = cur.fetchall()
-        user_id = result[0][0]
-        cur.execute("INSERT INTO commenti VALUES (0,%s,%s,%s)", (article_id, user_id, text))
-        conn.commit()
         conn.close()
-        return redirect(url_for('user', usr=session['username']))
-    else:
-        if "username" in session:
+        if request.args.get("titolo") or request.args.get("filtro"):
+            title = request.args.get("titolo")
+            filtro = request.args.get("filtro")
             conn=mysql.connect(host="localhost", user=mysql_user, password=mysql_password, database="VideoGamesHub")
             cur=conn.cursor()
-            cur.execute("SELECT * FROM articoli ORDER BY visualizzazioni")
+            if filtro == "recente":
+                cur.execute("SELECT * FROM articoli WHERE titolo LIKE %s ORDER BY data_pubblicazione DESC", ("%"+title+"%", ))
+            elif filtro == "vecchio":
+                cur.execute("SELECT * FROM articoli WHERE titolo LIKE %s ORDER BY data_pubblicazione ASC", ("%"+title+"%", ))
+            elif filtro == "titolo":
+                cur.execute("SELECT * FROM articoli WHERE titolo LIKE %s ORDER BY titolo", ("%"+title+"%", ))
+            elif filtro == "views":
+                cur.execute("SELECT * FROM articoli WHERE titolo LIKE %s ORDER BY visualizzazioni DESC", ("%"+title+"%", ))
             result = cur.fetchall()
             conn.close()
-            if request.args.get("titolo"):
-                title = request.args.get("titolo")
-                conn=mysql.connect(host="localhost", user=mysql_user, password=mysql_password, database="VideoGamesHub")
-                cur=conn.cursor()
-                cur.execute("SELECT * FROM articoli WHERE titolo = %s ORDER BY visualizzazioni", (title, ))
-                result = cur.fetchall()
-                conn.close()
-            return render_template("user.html", data=result, name=usr)
-        else:
-            return redirect(url_for("articles"))
+        return render_template("user.html", data=result, name=usr)
+    else:
+        return redirect(url_for("articles"))
 
 @app.route("/articles", methods=["GET", "POST"])
 def articles():
-    if request.args.get("titolo"):
+    if request.args.get("titolo") or request.args.get("filtro"):
         title = request.args.get("titolo")
+        filtro = request.args.get("filtro")
         conn=mysql.connect(host="localhost", user=mysql_user, password=mysql_password, database="VideoGamesHub")
         cur=conn.cursor()
-        cur.execute("SELECT * FROM articoli WHERE titolo = %s ORDER BY visualizzazioni", (title, ))
+        if filtro == "recente":
+            cur.execute("SELECT * FROM articoli WHERE titolo LIKE %s ORDER BY data_pubblicazione DESC", ("%"+title+"%", ))
+        elif filtro == "vecchio":
+            cur.execute("SELECT * FROM articoli WHERE titolo LIKE %s ORDER BY data_pubblicazione ASC", ("%"+title+"%", ))
+        elif filtro == "titolo":
+            cur.execute("SELECT * FROM articoli WHERE titolo LIKE %s ORDER BY titolo", ("%"+title+"%", ))
+        elif filtro == "views":
+            cur.execute("SELECT * FROM articoli WHERE titolo LIKE %s ORDER BY visualizzazioni DESC", ("%"+title+"%", ))
         result = cur.fetchall()
         conn.close()
     else:
         conn=mysql.connect(host="localhost", user=mysql_user, password=mysql_password, database="VideoGamesHub")
         cur=conn.cursor()
-        cur.execute("SELECT * FROM articoli ORDER BY visualizzazioni")
+        cur.execute("SELECT * FROM articoli ORDER BY data_pubblicazione DESC")
         result = cur.fetchall()
         conn.close()
     return render_template("user.html", data=result, name="")
