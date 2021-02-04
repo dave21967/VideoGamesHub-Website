@@ -13,7 +13,8 @@
     <div class="menu">
       <button class="menu-btn"> MENU
         <ul class="menu-content">
-          <li class="active"><a href="#">APP</a></li>
+          <li><a href="{{url_for('index')}}">HOME</a></li>
+          <li><a href="#">APP</a></li>
           <li><a href="{{url_for('login')}}">ACCEDI</a></li>
           <li><a href="#">GIOCHI</a></li>
           <li><a href="{{url_for('articles')}}">ARTICOLI</a></li>
@@ -32,6 +33,11 @@
     <h3>Contatti</h3>
       <p>Email: videogameshub01@gmail.com</p>
       <p>Instagram: videogameshub_</p>
+    <form method="POST">
+      <label style="color: red;" >Segnalaci un problema</label><br>
+      <textarea rows="10" cols="20" name="problem"></textarea><br>
+      <input type="submit" value="Segnala">
+    </form>
     </body>
   <footer>
     <script type="text/javascript">

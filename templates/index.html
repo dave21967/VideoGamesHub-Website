@@ -35,6 +35,12 @@
     <a href="https://www.pinterest.it/Johnny_pixelart_01/videogameshub/"><img class="pint-logo" src="{{url_for('static', filename='images/pinterest.png')}}"></img></a>
   </body>
   <footer>
+    <h4>Questo e' il box delle domande in cui potete chiedermi tutto cio' che volete!!</h4>
+    <form method="POST">
+      <label>Fammi una domanda??</label><br>
+      <textarea rows="10" cols="20" name="question"></textarea><br>
+      <input type="submit" value="Invia domanda">
+    </form>
     <script type="text/javascript">
       $("body").hide();
       $("body").fadeIn(2000);
