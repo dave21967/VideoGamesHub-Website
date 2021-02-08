@@ -11,7 +11,8 @@ mysql_password = None
 
 app = Flask(__name__)
 app.secret_key = 'hello world!'
-app.config['UPLOADS'] = './static/uploads/'
+app.config['UPLOADS'] = './VideoGamesHub Website/static/uploads/'
+app.config['GAMES-UPLOADS'] = "./VideoGamesHub Website/static/uploads/games/"
 app.config['VISITS'] = 0
 app.config['HOSTS'] = []
 
