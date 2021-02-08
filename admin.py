@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, session, redirect, url_for, current_app, request
 import mysql.connector as mysql
 from model import Articolo
+from smtplib import SMTP
 import os
 
 mysql_user = "root"
@@ -30,7 +31,7 @@ def add_article():
             art.immagine.save(current_app.config['UPLOADS']+art.immagine.filename)
             conn=mysql.connect(host="localhost", user=mysql_user, password=mysql_password, database="VideoGamesHub")
             cur=conn.cursor()
-            cur.execute("INSERT INTO articoli VALUES ('0',%s,%s,%s,%s, NOW())", (art.titolo, art.contenuto, art.immagine.filename, art.categoria))
+            cur.execute("INSERT INTO articoli VALUES ('0',%s,%s,%s,%s, NOW(), '0')", (art.titolo, art.contenuto, art.immagine.filename, art.categoria))
             cur.execute("SELECT email FROM utenti WHERE username <> 'admin' AND newsletter = 1")
             emails = cur.fetchall()
             if len(emails) > 0:
