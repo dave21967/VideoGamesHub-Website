@@ -1,9 +1,9 @@
 from flask import Flask, render_template, flash, request, redirect, url_for, make_response, session
 import mysql.connector as mysql
 from smtplib import SMTP
-from threading import Thread
 from datetime import *
 from admin import admin
+from videogames import games
 from model import Articolo
 
 mysql_user = "root"
@@ -16,6 +16,7 @@ app.config['VISITS'] = 0
 app.config['HOSTS'] = []
 
 app.register_blueprint(admin, url_prefix="/admin")
+app.register_blueprint(games, url_prefix="/games")
 
 @app.route("/", methods=["GET", "POST"])
 def index():
