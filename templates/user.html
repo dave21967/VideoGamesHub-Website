@@ -34,7 +34,7 @@
       <input id="search-button" type="submit" value="Cerca">
     </form>
     {%for row in data%}
-      <a style="color: black;" href="/articles/view/{{row[1]}}"><h2>{{row[1]}}</h2></a>      
+      <a style="color: black;" href="/articles/view/{{row[1]}}"><h2 style="text-align: center;" >{{row[1]}}</h2></a>      
         <img src="{{url_for('static', filename='uploads/'+row[3])}}">
         <p>Categoria: {{row[4]}}</p>
         <p>Data pubblicazione: {{row[5]}}</p>
