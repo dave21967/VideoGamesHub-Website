@@ -14,7 +14,12 @@
       <button class="menu-btn"> MENU
         <ul class="menu-content">
           <li class="active"><a href="#">APP</a></li>
-          <li><a href="{{url_for('login')}}">ACCEDI</a></li>
+          {% if name %}
+            <li><a href="/user/{{name}}">{{name.upper()}}</a></li>
+            <li><a href="{{url_for('logout')}}">LOGOUT</a></li>
+          {% else %}
+            <li><a href="{{url_for('login')}}">ACCEDI</a></li>
+          {% endif %}
           <li><a href="{{url_for('games.index')}}">GIOCHI</a></li>
           <li><a href="{{url_for('articles')}}">ARTICOLI</a></li>
           <li><a href="{{url_for('contacts')}}">CONTATTI</a></li>
