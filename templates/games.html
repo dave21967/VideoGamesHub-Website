@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="{{url_for('static', filename='css/index.css')}}">
     <link rel="stylesheet" href="{{url_for('static', filename='css/menu.css')}}">
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <title>VideoGames Hub - Home</title>
+    <title>VideoGames Hub - Giochi</title>
   </head>
   <header>
     <div class="img-block"><img src="{{url_for('static', filename='images/LOGOsmall.png')}}" alt="VideoGames Hub logo"><br></div>
@@ -33,10 +33,10 @@
       </tr>
       {%for f in data%}
         <tr>
-          <td>{{f}}</td>
-          <td>Descrizione</td>
-          <td>0</td>
-          <td><button><a style="color: blue;" href="/games/?filename={{f}}">Dowload</a></button></td>
+          <td>{{f.titolo}}</td>
+          <td>{{f.descrizione|safe}}</td>
+          <td>{{f.downloads}}</td>
+          <td><button><a style="color: blue;" href="/games/?filename={{f.nome_file}}">Dowload</a></button></td>
         </tr>
       {%endfor%}
     </table>

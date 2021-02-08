@@ -16,7 +16,7 @@
         <ul class="menu-content">
           <li class="active"><a href="{{url_for('index')}}">HOME</a></li>
           <li><a href="{{url_for('admin.add_article')}}">AGGIUNGI ARTICOLO</a></li>
-          <li><a href="#">MODIFICA ARTICOLO</a></li>
+          <li><a href="{{url_for('admin.add_game')}}">AGGIUNGI GIOCO</a></li>
           <li><a href="{{url_for('logout')}}">LOGOUT</a></li>
         </ul>
       </button>
@@ -44,6 +44,7 @@
             <td>{{a[0]}}</td>
             <td>{{a[1]}}</td>
             <td>{{a[2]}}</td>
+            <td><p><a style="color: blue;" href="/admin/delete-article/{{a[0]}}">Cancella</a></p></td>
           </tr>
       {%endfor%}
     </table>
