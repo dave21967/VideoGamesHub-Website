@@ -1,10 +1,7 @@
 from flask import Blueprint, render_template, session, redirect, url_for, current_app, request, send_file
-import mysql.connector as mysql
+import sqlite3
 from model import Articolo, Gioco
 import os
-
-mysql_user = "root"
-mysql_password = None
 
 games = Blueprint("games", __name__, template_folder="templates", static_folder="static")
 default_path = "./static/uploads/games/"
@@ -16,7 +13,7 @@ def index():
         return redirect(url_for("games.download", filename=request.args.get("filename")))
     else:
         files=os.listdir(current_app.config["GAMES-UPLOADS"])
-        conn=mysql.connect(host="localhost", user=mysql_user, password=mysql_password, database="VideoGamesHub")
+        conn = sqlite3.connect(current_app.config['DB_NAME'])
         cur=conn.cursor()
         cur.execute("SELECT titolo_gioco,descrizione_gioco,downloads,nome_file FROM giochi")
         result=cur.fetchall()
@@ -28,9 +25,9 @@ def index():
 
 @games.route("/download/<filename>")
 def download(filename):
-    conn=mysql.connect(host="localhost", user=mysql_user, password=mysql_password, database="VideoGamesHub")
+    conn = sqlite3.connect(current_app.config['DB_NAME'])
     cur=conn.cursor()
-    cur.execute("UPDATE giochi SET downloads = downloads + 1 WHERE nome_file = %s", (filename, ))
+    cur.execute("UPDATE giochi SET downloads = downloads + 1 WHERE nome_file = ?", (filename, ))
     conn.commit()
     conn.close()
     return send_file(os.path.join(default_path, filename), as_attachment=True)

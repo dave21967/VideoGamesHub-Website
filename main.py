@@ -1,19 +1,18 @@
 from flask import Flask, render_template, flash, request, redirect, url_for, make_response, session
-import mysql.connector as mysql
+import sqlite3
 from smtplib import SMTP
 from datetime import *
 from admin import admin
 from videogames import games
 from user import user
 from model import Articolo
-
-mysql_user = "root"
-mysql_password = None
+import os
 
 app = Flask(__name__)
 app.secret_key = 'hello world!'
-app.config['UPLOADS'] = './VideoGamesHub Website/static/uploads/'
-app.config['GAMES-UPLOADS'] = "./VideoGamesHub Website/static/uploads/games/"
+app.config['UPLOADS'] = './Videogameshub Website/static/uploads/'
+app.config['GAMES-UPLOADS'] = "./Videogameshub Website/static/uploads/games/"
+app.config['DB_NAME'] = "test.db"
 app.config['VISITS'] = 0
 app.config['HOSTS'] = []
 
@@ -61,9 +60,9 @@ def login():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        conn = mysql.connect(host="localhost", user=mysql_user, password=mysql_password, database="VideoGamesHub")
+        conn = sqlite3.connect(app.config['DB_NAME'])
         cur = conn.cursor()
-        cur.execute("SELECT username, password FROM utenti WHERE username = %s AND password = PASSWORD(%s)", (username, password))
+        cur.execute("SELECT username, password FROM utenti WHERE username = ? AND password = ?", (username, password))
         if len(cur.fetchall()) > 0:
             conn.close()
             session['username'] = username
@@ -90,10 +89,10 @@ def signup():
         if not email or not password or not username:
             return render_template("signup.html", error="Tutti i campi sono obbligatori")
         else:
-            conn = mysql.connect(host="localhost", user=mysql_user, password=mysql_password, database="VideoGamesHub")
+            conn = sqlite3.connect(app.config['DB_NAME'])
             cur = conn.cursor()
             try:
-                cur.execute("INSERT INTO utenti VALUES ('0',%s,%s,PASSWORD(%s),1)", (username, email, password))
+                cur.execute(f"INSERT INTO utenti VALUES (?,?,?,1)", (username, email, password,))
                 conn.commit()
                 conn.close()
                 mail = SMTP("smtp.gmail.com", 587)
@@ -101,7 +100,7 @@ def signup():
                 mail.starttls()
                 mail.login("videogameshub01@gmail.com", "Xcloseconnect68")
                 mail.sendmail("videogameshub01@gmail.com", "davide.costantini2001@gmail.com", "Subject: Nuova iscrizione\n\nUn nuovo utente e' entrato nella community!\n"+username+"")
-                mail.sendmail("videogameshub01@gmail.com", email, "Subject: Benvenuto"+username+"!\n\nBenvenuto nella nostra community!!!")
+                mail.sendmail("videogameshub01@gmail.com", email, "Subject: Benvenuto "+username+"!\n\nBenvenuto nella nostra community!!!")
                 mail.quit()
                 session['username'] = username
                 return redirect(url_for('index'))
@@ -115,20 +114,20 @@ def articles():
     if request.args.get("titolo") or request.args.get("filtro"):
         title = request.args.get("titolo")
         filtro = request.args.get("filtro")
-        conn=mysql.connect(host="localhost", user=mysql_user, password=mysql_password, database="VideoGamesHub")
+        conn = sqlite3.connect(app.config['DB_NAME'])
         cur=conn.cursor()
         if filtro == "recente":
-            cur.execute("SELECT * FROM articoli WHERE titolo LIKE %s ORDER BY data_pubblicazione DESC", ("%"+title+"%", ))
+            cur.execute("SELECT * FROM articoli WHERE titolo LIKE ? ORDER BY data_pubblicazione DESC", ("%"+title+"%", ))
         elif filtro == "vecchio":
-            cur.execute("SELECT * FROM articoli WHERE titolo LIKE %s ORDER BY data_pubblicazione ASC", ("%"+title+"%", ))
+            cur.execute("SELECT * FROM articoli WHERE titolo LIKE ? ORDER BY data_pubblicazione ASC", ("%"+title+"%", ))
         elif filtro == "titolo":
-            cur.execute("SELECT * FROM articoli WHERE titolo LIKE %s ORDER BY titolo", ("%"+title+"%", ))
+            cur.execute("SELECT * FROM articoli WHERE titolo LIKE ? ORDER BY titolo", ("%"+title+"%", ))
         elif filtro == "views":
-            cur.execute("SELECT * FROM articoli WHERE titolo LIKE %s ORDER BY visualizzazioni DESC", ("%"+title+"%", ))
+            cur.execute("SELECT * FROM articoli WHERE titolo LIKE ? ORDER BY visualizzazioni DESC", ("%"+title+"%", ))
         result = cur.fetchall()
         conn.close()
     else:
-        conn=mysql.connect(host="localhost", user=mysql_user, password=mysql_password, database="VideoGamesHub")
+        conn = sqlite3.connect(app.config['DB_NAME'])
         cur=conn.cursor()
         cur.execute("SELECT * FROM articoli ORDER BY data_pubblicazione DESC")
         result = cur.fetchall()
@@ -140,11 +139,11 @@ def articles():
 
 @app.route("/articles/view/<title>")
 def view_article(title):
-    conn=mysql.connect(host="localhost", user=mysql_user, password=mysql_password, database="VideoGamesHub")
+    conn = sqlite3.connect(app.config['DB_NAME'])
     cur=conn.cursor()
-    cur.execute("SELECT * FROM articoli WHERE titolo = %s", (title,))
+    cur.execute("SELECT * FROM articoli WHERE titolo = ?", (title,))
     result = cur.fetchall()
-    cur.execute("UPDATE articoli SET visualizzazioni = visualizzazioni + 1 WHERE titolo = %s", (title, ))
+    cur.execute("UPDATE articoli SET visualizzazioni = visualizzazioni + 1 WHERE titolo = ?", (title, ))
     conn.commit()
     conn.close()
     return render_template("article.html", title=title, content=f"{result[0][2]}")

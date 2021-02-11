@@ -1,18 +1,17 @@
 from flask import Blueprint, render_template, session, redirect, url_for, current_app, request
-import mysql.connector as mysql
-from model import Articolo
+import sqlite3
+import uuid
 from smtplib import SMTP
+from model import Articolo
 import os
-
-mysql_user = "root"
-mysql_password = None
+from datetime import datetime
 
 admin = Blueprint("admin", __name__, template_folder="templates", static_folder="static")
 
 @admin.route("/")
 def index():
     if 'username' in session:
-        conn=mysql.connect(host="localhost", user=mysql_user, password=mysql_password, database="VideoGamesHub")
+        conn = sqlite3.connect(current_app.config['DB_NAME'])
         cur=conn.cursor()
         cur.execute("SELECT * FROM utenti WHERE username <> 'admin'")
         result = cur.fetchall()
@@ -29,9 +28,9 @@ def add_article():
         art = Articolo(request.form['titolo'], request.form['contenuto'], request.form['categoria'], request.files['images'])
         try:
             art.immagine.save(current_app.config['UPLOADS']+art.immagine.filename)
-            conn=mysql.connect(host="localhost", user=mysql_user, password=mysql_password, database="VideoGamesHub")
+            conn = sqlite3.connect(current_app.config['DB_NAME'])
             cur=conn.cursor()
-            cur.execute("INSERT INTO articoli VALUES ('0',%s,%s,%s,%s, NOW(), '0')", (art.titolo, art.contenuto, art.immagine.filename, art.categoria))
+            cur.execute("INSERT INTO articoli VALUES ('4',?,?,?,?,?)", (art.titolo, art.contenuto, art.immagine.filename, art.categoria,datetime.now(), ))
             cur.execute("SELECT email FROM utenti WHERE username <> 'admin' AND newsletter = 1")
             emails = cur.fetchall()
             if len(emails) > 0:
@@ -49,24 +48,17 @@ def add_article():
             return f"Errore: {e}"
     else:
         if "username" in session:
-            conn=mysql.connect(host="localhost", user=mysql_user, password=mysql_password, database="VideoGamesHub")
-            cur=conn.cursor()
-            cur.execute("SELECT nome FROM categorie")
-            ris = cur.fetchall()
-            data = []
-            for i in ris:
-                data.append(i[0])
-            conn.close()
-            return render_template("add_article.html", data=data)
+            
+            return render_template("add_article.html")
         else:
             return redirect(url_for('login'))
 
 @admin.route("/delete-article/<title>")
 def delete_article(title):
     if "username" in session:
-        conn=mysql.connect(host="localhost", user=mysql_user, password=mysql_password, database="VideoGamesHub")
+        conn = sqlite3.connect(db)
         cur=conn.cursor()
-        cur.execute("DELETE FROM articoli WHERE titolo = %s", (title, ))
+        cur.execute("DELETE FROM articoli WHERE titolo = ?", (title, ))
         conn.commit()
         conn.close()
         return redirect(url_for("admin.index"))
@@ -81,9 +73,9 @@ def add_game():
             descr = request.form["descrizione"]
             game = request.files["gioco"]
             try:
-                conn=mysql.connect(host="localhost", user=mysql_user, password=mysql_password, database="VideoGamesHub")
+                conn = sqlite3.connect(current_app.config['DB_NAME'])
                 cur=conn.cursor()
-                cur.execute("INSERT INTO giochi VALUES (%s,NOW(),%s,0,%s)", (title, game.filename, descr))
+                cur.execute("INSERT INTO giochi VALUES (?,NOW(),?,0,?)", (title, game.filename, descr))
                 conn.commit()
                 conn.close()
                 game.save(os.path.join(current_app.config["GAMES-UPLOADS"], game.filename))
