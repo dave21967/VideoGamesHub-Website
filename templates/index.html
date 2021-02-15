@@ -1,7 +1,7 @@
 {% extends "template.html" %}
 {% block head %}
     {{super()}}
-    <title>{% block title %} VideoGamesHub - Home {% endblock %}</title>
+    <title>{% block title %}Home {% endblock %}</title>
     <style>
         body {
             background-image: url("{{url_for('static', filename='images/sfondo.png')}}");
@@ -10,9 +10,10 @@
         }
         @font-face {
             font-family: Hack;
-            src: url("{{url_for('static', filename='fonts/Hack-Italic.ttf')}}");
+            src: url("{{url_for('static', filename='fonts/Hack-Regular.ttf')}}");
         }
         h1 {
+            font-family: Impact;
             text-align: center;
         }
         h5 {
@@ -20,12 +21,20 @@
             text-align: center;
         }
         #txt-area {
-            width: 50%;
+            width: 30%;
+        }
+        #form-domande {
+            position: relative;
+            left: 33%;
         }
         #insta-logo {
             position: relative;
             left: 30%;
             width: 10%;
+        }
+        #send-btn {
+            position: relative;
+            left: 13%;
         }
         #pint-logo {
             position: relative;
@@ -56,6 +65,14 @@
             #txt-area {
                 width: 100%;
             }
+            #send-btn {
+                position: relative;
+                left: 0%;
+            }
+            #form-domande {
+                position: relative;
+                left: 0%;
+            }
         }
     </style>
 {% endblock %}
@@ -64,23 +81,24 @@
 {% endblock %}
 {% block content %}
     {{super()}}
-    <b><h1 style="font-family: Impact;">Home</h1></b>
+    <b><h1>Home</h1></b>
     <h5>
         Once upon a time, in a galaxy far far away…. ehm ok.<br>
         Ben arrivati, sono un ne…ehm<br>
-        appassionato di videogiochi e con questo sito spero di condividere con voi i miei <br>
-        progetti e le curiosità sui giochi più conosciuti (ma anche quelli meno noti).<br>
+        appassionato di videogiochi e con questo sito spero di condividere<br>
+        con voi i miei progetti e le curiosità sui giochi più conosciuti  <br>
+        (ma anche quelli meno noti).<br>
         Per altre info cercate un po’ sul sito, buon giro!<br>
         E seguitemi sui social 🙂<br>
     </h5>
     <a href="https://www.instagram.com/videogameshub.it/"><img id="insta-logo" src="{{url_for('static', filename='images/instagram.png')}}"></a>
     <a href="https://www.pinterest.it/Johnny_pixelart_01/videogameshub/"><img id="pint-logo" src="{{url_for('static', filename='images/pinterest.png')}}"></a>
     <a href="https://www.twitch.tv/videogameshub_"><img id="twitch-logo" src="{{url_for('static', filename='images/twitch.png')}}"></a>
-    <form method="POST">
+    <form id="form-domande" method="POST">
         <div class="mb-3">
-            <label for="exampleFormControlTextarea1" class="form-label">Fammi una domanda</label>
+            <label for="exampleFormControlTextarea1" class="form-label">Per suggerimenti e richieste:</label>
             <textarea class="form-control" name="question" id="txt-area" rows="3"></textarea><br>
-            <input type="submit" class="btn btn-primary" value="Invia">
+            <input id="send-btn" type="submit" class="btn btn-dark" value="Invia">
         </div>
     </form>
 <script type="text/javascript">
