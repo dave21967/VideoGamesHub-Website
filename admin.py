@@ -25,12 +25,12 @@ def index():
 @admin.route("/add-article", methods=['GET', 'POST'])
 def add_article():
     if request.method == 'POST':
-        art = Articolo(request.form['titolo'], request.form['contenuto'], request.form['categoria'], request.files['images'])
+        art = Articolo(request.form['titolo'], request.form['contenuto'], request.form['categoria'], request.files['images'], request.form['anteprima'])
         try:
             art.immagine.save(current_app.config['UPLOADS']+art.immagine.filename)
             conn = sqlite3.connect(current_app.config['DB_NAME'])
             cur=conn.cursor()
-            cur.execute("INSERT INTO articoli VALUES ('4',?,?,?,?,?)", (art.titolo, art.contenuto, art.immagine.filename, art.categoria,datetime.now(), ))
+            cur.execute("INSERT INTO articoli VALUES (?,?,?,?,?,?)", (art.titolo, art.contenuto, art.immagine.filename, art.categoria,datetime.now(), 0))
             cur.execute("SELECT email FROM utenti WHERE username <> 'admin' AND newsletter = 1")
             emails = cur.fetchall()
             if len(emails) > 0:
@@ -75,7 +75,7 @@ def add_game():
             try:
                 conn = sqlite3.connect(current_app.config['DB_NAME'])
                 cur=conn.cursor()
-                cur.execute("INSERT INTO giochi VALUES (?,NOW(),?,0,?)", (title, game.filename, descr))
+                cur.execute("INSERT INTO giochi VALUES (?,?,?,0,?)", (title, datetime.now(),game.filename, descr))
                 conn.commit()
                 conn.close()
                 game.save(os.path.join(current_app.config["GAMES-UPLOADS"], game.filename))
