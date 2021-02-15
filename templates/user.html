@@ -3,14 +3,26 @@
   {{super()}}
   <title>{% block title %}VideoGamesHub - Articoli{% endblock %}</title>
   <style>
+    @font-face {
+      font-family: Hack;
+      src: url("{{url_for('static', filename='fonts/Hack-Regular.ttf')}}");
+    }
+    @font-face {
+      font-family: BoldHack;
+      src: url("{{url_for('static', filename='fonts/Hack-Bold.ttf')}}");
+    }
     .article-img {
-      height: 400px;
+      height: 200px;
       position: relative;
-      left: 40%;
+      left: 5%;
+    }
+    #label {
+      font-family: BoldHack;
     }
     @media only screen and (max-width: 600px) {
       .article-img {
-        height: 400px;
+        height: 200px;
+        width: 80%;
         position: relative;
         left: 10%;
       }
@@ -22,11 +34,21 @@
 {% endblock %}
 {% block content %}
   {{super()}}
+  <h1 style="font-family: Impact;">Ultime notizie</h1>
   {%for row in data%}
-      <a style="color: black;" href="/articles/view/{{row[0]}}"><h2 style="text-align: center;" >{{row[0]}}</h2></a>      
-        <img class="article-img" src="{{url_for('static', filename='uploads/'+row[2])}}">
-        <p>Categoria: {{row[3]}}</p>
-        <p>Data pubblicazione: {{row[4]}}</p>
-        <p>Visualizzazioni: {{row[5]}}</p>
+        <a style="color: black;" href="/articles/view/{{row[0]}}"><h2 style="font-family: Hack; text-align: center;" >{{row[0]}}</h2></a>      
+        <div class="container-fluid">
+          <div class="row" id="details">
+            <div class="col-sm">
+              <img class="article-img" src="{{url_for('static', filename='uploads/'+row[2])}}">
+            </div>
+            <div class="col-sm">
+              <p id="label">Categoria: <span style="font-family: Arial;">{{row[3]}}</span></p>
+              <p id="label">Data pubblicazione: <span style="font-family: Arial;">{{row[4]}}</span></p>
+              <p id="label">Visualizzazioni: <span style="font-family: Arial;">{{row[5]}}</span></p>
+              {{row[6]|safe}}
+            </div>
+          </div>
+        </div>
     {%endfor%}
 {% endblock %}
