@@ -1,47 +1,32 @@
-<!DOCTYPE html>
-<html lang="it" dir="ltr">
-  <head>
-    <meta charset="utf-8">
-    <meta content="width=device-width, initial-scale=1" name="viewport" />
-    <link rel="stylesheet" href="{{url_for('static', filename='css/index.css')}}">
-    <link rel="stylesheet" href="{{url_for('static', filename='css/menu.css')}}">
-    <script src="{{url_for('static', filename='javascript/jquery.js')}}"></script>
-    <title>VideoGames Hub - Articoli</title>
-  </head>
-  <header>
-    <div class="img-block"><img src="{{url_for('static', filename='images/LOGOsmall.png')}}" alt="VideoGames Hub logo"><br></div>
-    <h1></h1>
-    <div class="menu">
-      <button class="menu-btn"> MENU
-        <ul class="menu-content">
-          <li class="active"><a href="{{url_for('index')}}">HOME</a></li>
-          <li><a href="/user/{{name}}/myProfile">PROFILO</a></li>
-          <li><a href="{{url_for('logout')}}">LOGOUT</a></li>
-        </ul>
-      </button>
-    </div>
-    <h3>{{name}}</h3>
-  </header>
-  <body>
-    <form method="GET">
-      <input type="text" class="search-bar" name="titolo" placeholder="Cerca articolo">
-      <select name="filtro">
-        <option value="recente">Piu' recente</option>
-        <option value="vecchio">Meno recente</option>
-        <option value="titolo">Titolo</option>
-        <option value="views">Più visitati</option>
-      </select>
-      <input id="search-button" type="submit" value="Cerca">
-    </form>
-    {%for row in data%}
+{% extends "template.html" %}
+{% block head %}
+  {{super()}}
+  <title>{% block title %}VideoGamesHub - Articoli{% endblock %}</title>
+  <style>
+    .article-img {
+      height: 400px;
+      position: relative;
+      left: 40%;
+    }
+    @media only screen and (max-width: 600px) {
+      .article-img {
+        height: 400px;
+        position: relative;
+        left: 10%;
+      }
+    }
+  </style>
+{% endblock %}
+{% block menu %}
+  {{super()}}
+{% endblock %}
+{% block content %}
+  {{super()}}
+  {%for row in data%}
       <a style="color: black;" href="/articles/view/{{row[0]}}"><h2 style="text-align: center;" >{{row[0]}}</h2></a>      
-        <img src="{{url_for('static', filename='uploads/'+row[2])}}">
+        <img class="article-img" src="{{url_for('static', filename='uploads/'+row[2])}}">
         <p>Categoria: {{row[3]}}</p>
         <p>Data pubblicazione: {{row[4]}}</p>
         <p>Visualizzazioni: {{row[5]}}</p>
     {%endfor%}
-  </body>
-  <footer>
-    
-  </footer>
-</html>
+{% endblock %}

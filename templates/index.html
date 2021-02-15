@@ -1,54 +1,92 @@
-<!DOCTYPE html>
-<html lang="it" dir="ltr">
-  <head>
-    <meta charset="utf-8">
-    <meta content="width=device-width, initial-scale=1" name="viewport" />
-    <link rel="stylesheet" href="{{url_for('static', filename='css/index.css')}}">
-    <link rel="stylesheet" href="{{url_for('static', filename='css/menu.css')}}">
-    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <title>VideoGames Hub - Home</title>
-  </head>
-  <header>
-    <div class="img-block"><img src="{{url_for('static', filename='images/LOGOsmall.png')}}" alt="VideoGames Hub logo"><br></div>
-    <div class="menu">
-      <button class="menu-btn"> MENU
-        <ul class="menu-content">
-          <li class="active"><a href="#">APP</a></li>
-          {% if name %}
-            <li><a href="/user/{{name}}">{{name.upper()}}</a></li>
-            <li><a href="{{url_for('logout')}}">LOGOUT</a></li>
-          {% else %}
-            <li><a href="{{url_for('login')}}">ACCEDI</a></li>
-          {% endif %}
-          <li><a href="{{url_for('games.index')}}">GIOCHI</a></li>
-          <li><a href="{{url_for('articles')}}">ARTICOLI</a></li>
-          <li><a href="{{url_for('contacts')}}">CONTATTI</a></li>
-        </ul>
-      </button>
-    </div>
-  </header>
-  <body>
-    <h1>HOME</h1>
-    <h2 id="title">Once upon a time, in a galaxy far far away….ehm ok.
-      <br>Ben arrivati, sono un ne…ehm appassionato di videogiochi e<br>
-      con questo sito spero di condividere con voi i miei progetti e<br>
-      le curiosità sui giochi più conosciuti (ma anche quelli meno noti).<br>
-      Per altre info cercate un po’ sul sito, buon giro!<br>
-      E seguitemi sui social 🙂
-    </h2>
-    <a href="https://www.instagram.com/videogameshub_/"><img class="insta-logo" src="{{url_for('static', filename='images/instagram.png')}}"></img></a>
-    <a href="https://www.pinterest.it/Johnny_pixelart_01/videogameshub/"><img class="pint-logo" src="{{url_for('static', filename='images/pinterest.png')}}"></img></a>
-  </body>
-  <footer>
-    <h4>Questo e' il box delle domande in cui potete chiedermi tutto cio' che volete!!</h4>
+{% extends "template.html" %}
+{% block head %}
+    {{super()}}
+    <title>{% block title %} VideoGamesHub - Home {% endblock %}</title>
+    <style>
+        body {
+            background-image: url("{{url_for('static', filename='images/sfondo.png')}}");
+            background-size: 100%;
+            color: white;
+        }
+        @font-face {
+            font-family: Hack;
+            src: url("{{url_for('static', filename='fonts/Hack-Italic.ttf')}}");
+        }
+        h1 {
+            text-align: center;
+        }
+        h5 {
+            font-family: Hack;
+            text-align: center;
+        }
+        #txt-area {
+            width: 50%;
+        }
+        #insta-logo {
+            position: relative;
+            left: 30%;
+            width: 10%;
+        }
+        #pint-logo {
+            position: relative;
+            left: 35.5%;
+            width: 5%;
+        }
+        #twitch-logo {
+            position: relative;
+            left: 43%;
+            width: 5%;
+        }
+        @media only screen and (max-width: 600px) {
+            #insta-logo {
+                position: relative;
+                left: 10%;
+                width: 30%;
+            }
+            #pint-logo {
+                position: relative;
+                left: 13%;
+                width: 15%;
+            }
+            #twitch-logo {
+                position: relative;
+                left: 24%;
+                width: 15%;
+            }
+            #txt-area {
+                width: 100%;
+            }
+        }
+    </style>
+{% endblock %}
+{% block menu %}
+    {{super()}}
+{% endblock %}
+{% block content %}
+    {{super()}}
+    <b><h1 style="font-family: Impact;">Home</h1></b>
+    <h5>
+        Once upon a time, in a galaxy far far away…. ehm ok.<br>
+        Ben arrivati, sono un ne…ehm<br>
+        appassionato di videogiochi e con questo sito spero di condividere con voi i miei <br>
+        progetti e le curiosità sui giochi più conosciuti (ma anche quelli meno noti).<br>
+        Per altre info cercate un po’ sul sito, buon giro!<br>
+        E seguitemi sui social 🙂<br>
+    </h5>
+    <a href="https://www.instagram.com/videogameshub.it/"><img id="insta-logo" src="{{url_for('static', filename='images/instagram.png')}}"></a>
+    <a href="https://www.pinterest.it/Johnny_pixelart_01/videogameshub/"><img id="pint-logo" src="{{url_for('static', filename='images/pinterest.png')}}"></a>
+    <a href="https://www.twitch.tv/videogameshub_"><img id="twitch-logo" src="{{url_for('static', filename='images/twitch.png')}}"></a>
     <form method="POST">
-      <label>Fammi una domanda??</label><br>
-      <textarea rows="10" cols="20" name="question"></textarea><br>
-      <input type="submit" value="Invia domanda">
+        <div class="mb-3">
+            <label for="exampleFormControlTextarea1" class="form-label">Fammi una domanda</label>
+            <textarea class="form-control" name="question" id="txt-area" rows="3"></textarea><br>
+            <input type="submit" class="btn btn-primary" value="Invia">
+        </div>
     </form>
-    <script type="text/javascript">
-      $("body").hide();
-      $("body").fadeIn(2000);
-    </script>
-  </footer>
-</html>
+<script type="text/javascript">
+    $("#content").hide();
+    $("#content").fadeIn(2000);
+</script>
+{% endblock %}
+
+

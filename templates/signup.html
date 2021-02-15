@@ -1,38 +1,44 @@
-<!DOCTYPE html>
-<html lang="it" dir="ltr">
-  <head>
-    <meta charset="utf-8">
-    <meta content="width=device-width, initial-scale=1" name="viewport" />
-    <link rel="stylesheet" href="{{url_for('static', filename='css/index.css')}}">
-    <link rel="stylesheet" href="{{url_for('static', filename='css/menu.css')}}">
-    <link rel="stylesheet" href="{{url_for('static', filename='css/login.css')}}">
-    <script src="{{url_for('static', filename='javascript/jquery.js')}}"></script>
-    <title>VideoGames Hub - Registrati</title>
-  </head>
-  <header>
-    <div class="img-block"><img src="{{url_for('static', filename='images/LOGOsmall.png')}}" alt="VideoGames Hub logo"><br></div>
-    <h1></h1>
-    <div class="menu">
-      <button class="menu-btn"> MENU
-        <ul class="menu-content">
-          <li class="active"><a href="{{url_for('index')}}">HOME</a></li>
-        </ul>
-      </button>
+{% extends "template.html" %}
+{% block head %}
+  {{super()}}
+  <title>{% block title %}VideoGamesHub - Accedi{% endblock %}</title>
+  <style>
+    #buttonSend {
+      width: 100%;
+    }
+    h1 {
+      position: relative;
+      left: 41%;
+    }
+  </style>
+{% endblock %}
+{% block menu %}
+  {{super()}}
+{% endblock %}
+{% block content %}
+  {{super()}}
+  <h1>Accedi - Registrati</h1><br><br><br><br>
+  <form class="col-lg-6 offset-lg-5" method="POST">
+    <div class="col-lg-6">
+      <div class="col-sm-10">
+        <input type="email" name="email" class="form-control" placeholder="Email">
+      </div>
     </div>
-  </header>
-  <body>
-    <br>
-    <form class="form" method="POST">
-      <input class="email-input" type="email" placeholder="Email" name="email"><br>
-      <input class="username-input" type="text" placeholder="Username" name="username"><br>
-      <input class="passwd-input" type="password" placeholder="Password" name="password"><br>
-      <label style="font-size: 80%;">Desidero rimanere aggiornato sui contenuti di questo sito<br>Controllare lo spam in caso di mancata ricezione delle mail di notifica!</label><br>
-      <input class="login-btn" type="submit" value="Registrati"><br>
-      <label style="color: red;">{{error}}</label>
-      <a class="signup-link" href="{{url_for('login')}}"><p>Sei già registrato?</p></a>
-    </form>
-  </body>
-  <footer>
-
-  </footer>
-</html>
+    <div class="col-lg-6">
+      <div class="col-sm-10">
+        <input type="text" name="username" class="form-control" id="formGroupExampleInput2" placeholder="Username">
+      </div>
+    </div>
+    <div class="col-lg-6">
+      <div class="col-sm-10">
+        <input type="password" name="password" class="form-control" id="inputPassword" aria-describedby="passwordHelpInLine" placeholder="Password">
+      </div>
+    </div>
+    <div class="col-lg-6">
+      <div class="col-sm-10">
+        <input type="submit" class="btn btn-primary" id="buttonSend" value="Login">
+      </div>
+    </div>
+    <a href="{{url_for('login')}}">Hai già un account?</a>
+  </form>
+{% endblock %}

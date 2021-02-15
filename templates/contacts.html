@@ -1,48 +1,22 @@
-<!DOCTYPE html>
-<html lang="it" dir="ltr">
-  <head>
-    <meta charset="utf-8">
-    <meta content="width=device-width, initial-scale=1" name="viewport" />
-    <link rel="stylesheet" href="{{url_for('static', filename='css/index.css')}}">
-    <link rel="stylesheet" href="{{url_for('static', filename='css/menu.css')}}">
-    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <title>VideoGames Hub - Contatti</title>
-  </head>
-  <header>
-    <div class="img-block"><img src="{{url_for('static', filename='images/LOGOsmall.png')}}" alt="VideoGames Hub logo"><br></div>
-    <div class="menu">
-      <button class="menu-btn"> MENU
-        <ul class="menu-content">
-          <li><a href="{{url_for('index')}}">HOME</a></li>
-          <li><a href="#">APP</a></li>
-          <li><a href="{{url_for('login')}}">ACCEDI</a></li>
-          <li><a href="#">GIOCHI</a></li>
-          <li><a href="{{url_for('articles')}}">ARTICOLI</a></li>
-        </ul>
-      </button>
-    </div>
-  </header>
-  <body>
-    <h1>CONTATTI</h1>
-    <h3>Chi sono?</h3>
-    <p>
-        Sono Davide Costantini, un ragazzo di 19 anni appassionato di videogiochi.<br>
-        Sono uno studente di informatica al IIS. Corni di Modena e questo e&grave;<br>
-        il mio sito web.
-    </p>
-    <h3>Contatti</h3>
-      <p>Email: videogameshub01@gmail.com</p>
-      <p>Instagram: videogameshub_</p>
-    <form method="POST">
-      <label style="color: red;" >Segnalaci un problema</label><br>
-      <textarea rows="10" cols="20" name="problem"></textarea><br>
-      <input type="submit" value="Segnala">
-    </form>
-    </body>
-  <footer>
-    <script type="text/javascript">
-      $("body").hide();
-      $("body").fadeIn(2000);
-    </script>
-  </footer>
-</html>
+{% extends "template.html" %}
+
+{% block head %}
+  {{super()}}
+  <title>{% block title %}VideoGamesHub - Contatti{% endblock %}</title>
+{% endblock %}
+{% block menu %}
+  {{super()}}
+{% endblock %}
+{% block content %}
+  {{ super() }}
+<h1>CONTATTI</h1>
+<h3>Chi sono?</h3>
+<p>
+    Sono Davide Costantini, un ragazzo di 19 anni appassionato di videogiochi.<br>
+    Sono uno studente di informatica al IIS. Corni di Modena e questo e&grave;<br>
+    il mio sito web.
+</p>
+<h3>Contatti</h3>
+  <p>Email: videogameshub01@gmail.com</p>
+  <p>Instagram: videogameshub_</p>
+{% endblock %}
