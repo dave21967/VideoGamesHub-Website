@@ -8,11 +8,11 @@ from user import user
 from model import Articolo
 import os
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder='templates', static_folder='static')
 app.secret_key = 'hello world!'
-app.config['UPLOADS'] = './Videogameshub Website/static/uploads/'
-app.config['GAMES-UPLOADS'] = "./Videogameshub Website/static/uploads/games/"
-app.config['DB_NAME'] = "test.db"
+app.config['UPLOADS'] = 'static/uploads/'
+app.config['GAMES-UPLOADS'] = "static/uploads/games/"
+app.config['DB_NAME'] = "videogameshub.db"
 app.config['VISITS'] = 0
 app.config['HOSTS'] = []
 
@@ -146,7 +146,10 @@ def view_article(title):
     cur.execute("UPDATE articoli SET visualizzazioni = visualizzazioni + 1 WHERE titolo = ?", (title, ))
     conn.commit()
     conn.close()
-    return render_template("article.html", title=title, content=f"{result[0][2]}")
+    if "username" in session:
+        return render_template("article.html", title=title, content=f"{result[0][1]}", name=session["username"])
+    else:
+        return render_template("article.html", title=title, content=f"{result[0][1]}")
 
 if __name__ == '__main__':
     app.run(debug=True, host="0.0.0.0")
