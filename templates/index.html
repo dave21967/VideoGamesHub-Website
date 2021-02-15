@@ -78,6 +78,19 @@
 {% endblock %}
 {% block menu %}
     {{super()}}
+    {% block dropdown_content %}
+      <ul class="dropdown-menu">
+        {% if session %}
+          <li><a class="dropdown-item" href="/user/{{name}}/myProfile">{{name}}</a></li>
+          <li><a class="dropdown-item" href="{{url_for('logout')}}">Esci</a></li>  
+        {% else %}
+          <li><a class="dropdown-item" href="{{url_for('login')}}">Accedi</a></li>
+          <li><a class="dropdown-item" href="{{url_for('signup')}}">Registrati</a></li>
+          <li class="dropdown-divider"></li>
+          <li><a class="dropdown-item" href="#">Privacy</a></li>
+        {% endif %}
+      </ul>
+    {% endblock %}
 {% endblock %}
 {% block content %}
     {{super()}}

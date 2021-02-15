@@ -19,34 +19,55 @@
     #label {
       font-family: BoldHack;
     }
+    #details {
+      position: relative;
+      right: 10%;
+    }
     @media only screen and (max-width: 600px) {
       .article-img {
         height: 200px;
         width: 80%;
         position: relative;
-        left: 10%;
+        left: 1%;
+      }
+      #details {
+        position: relative;
+        right: 0%;
       }
     }
   </style>
 {% endblock %}
 {% block menu %}
   {{super()}}
+    {% block dropdown_content %}
+      <ul class="dropdown-menu">
+        {% if session %}
+          <li><a class="dropdown-item" href="/user/{{name}}/myProfile">{{name}}</a></li>
+          <li><a class="dropdown-item" href="{{url_for('logout')}}">Esci</a></li>  
+        {% else %}
+          <li><a class="dropdown-item" href="{{url_for('login')}}">Accedi</a></li>
+          <li><a class="dropdown-item" href="{{url_for('signup')}}">Registrati</a></li>
+          <li class="dropdown-divider"></li>
+          <li><a class="dropdown-item" href="#">Privacy</a></li>
+        {% endif %}
+      </ul>
+    {% endblock %}
 {% endblock %}
 {% block content %}
   {{super()}}
   <h1 style="font-family: Impact;">Ultime notizie</h1>
   {%for row in data%}
-        <a style="color: black;" href="/articles/view/{{row[0]}}"><h2 style="font-family: Hack; text-align: center;" >{{row[0]}}</h2></a>      
-        <div class="container-fluid">
-          <div class="row" id="details">
+        <div id="article" class="container-fluid">
+          <div class="row">
             <div class="col-sm">
               <img class="article-img" src="{{url_for('static', filename='uploads/'+row[2])}}">
             </div>
-            <div class="col-sm">
-              <p id="label">Categoria: <span style="font-family: Arial;">{{row[3]}}</span></p>
-              <p id="label">Data pubblicazione: <span style="font-family: Arial;">{{row[4]}}</span></p>
-              <p id="label">Visualizzazioni: <span style="font-family: Arial;">{{row[5]}}</span></p>
+            <div id="details" class="col-sm">
+              <a style="color: black;" href="/articles/view/{{row[0]}}"><h2 style="font-family: Hack;" >{{row[0]}}</h2></a>
               {{row[6]|safe}}
+              <p id="label">Categoria: <span style="font-family: Hack;">{{row[3]}} | </span>
+              <span id="label">Data pubblicazione: <span style="font-family: Hack;">{{row[4]}} | </span></span>
+              <span id="label">Visualizzazioni: <span style="font-family: Hack;">{{row[5]}}</span></p>
             </div>
           </div>
         </div>

@@ -1,54 +1,41 @@
-<!DOCTYPE html>
-<html lang="it" dir="ltr">
-  <head>
-    <meta charset="utf-8">
-    <meta content="width=device-width, initial-scale=1" name="viewport" />
-    <link rel="stylesheet" href="{{url_for('static', filename='css/index.css')}}">
-    <link rel="stylesheet" href="{{url_for('static', filename='css/menu.css')}}">
-    <script src="{{url_for('static', filename='javascript/jquery.js')}}"></script>
-    <title>VideoGames Hub - Admin</title>
-  </head>
-  <header>
-    <div class="img-block"><img src="{{url_for('static', filename='images/LOGOsmall.png')}}" alt="VideoGames Hub logo"><br></div>
-    <h1></h1>
-    <div class="menu">
-      <button class="menu-btn"> MENU
-        <ul class="menu-content">
-          <li class="active"><a href="{{url_for('index')}}">HOME</a></li>
-          <li><a href="{{url_for('admin.add_article')}}">AGGIUNGI ARTICOLO</a></li>
-          <li><a href="{{url_for('admin.add_game')}}">AGGIUNGI GIOCO</a></li>
-          <li><a href="{{url_for('logout')}}">LOGOUT</a></li>
-        </ul>
-      </button>
-    </div>
-  </header>
-  <body>
-    <h1>Benvenuto admin</h1>
-    <h3>Qui puoi aggiungere, modificare o rimuovere i tuoi articoli!</h3>
-    <h2>Visite: {{visits}}</h2>
-    <h3>Utenti registrati</h3>
-    <ul>
-      {%for user in data%}
-        <li style="color: blue;">{{user[0]}}</li>
-      {%endfor%}
-    </ul>
-    <h3>Articoli</h3>
-    <table border="1px">
-      <tr>
-        <th style="background-color: black; color: white;">Titolo</th>
-        <th style="background-color: black; color: white;" >Categoria</th>
-        <th style="background-color: black; color: white;" >Data pubblicazione</th>
+{% extends "template.html" %}
+{% block head %}
+  {{super()}}
+  <title>{% block title %}Administrator{% endblock %}</title>
+  <style>
+    #button {
+      position: relative;
+      left: 35%;
+    }
+    @media only screen and (max-width: 600px) {
+      #button {
+        position: relative;
+        left: 10%;
+      }
+    }
+  </style>
+{% endblock %}
+{% block menu %}
+  {{super()}}
+{% endblock %}
+{% block content %}
+  {{super()}}
+  <table class="table">
+    <tr class="table-dark">
+      <th>Titolo</th>
+      <th>Data pubblicazione</th>
+      <th>Categoria</th>
+      <th></th>
+    </tr>
+    {% for a in articles %}
+      <tr class="table-light">
+        <td>{{a[0]}}</td>
+        <td>{{a[1]}}</td>
+        <td>{{a[2]}}</td>
+        <td><a href="/admin/delete-article/{{a[0]}}"><button class="btn btn-dark">Cancella</button></a></td>
       </tr>
-      {%for a in articles%}
-          <tr>
-            <td>{{a[0]}}</td>
-            <td>{{a[1]}}</td>
-            <td>{{a[2]}}</td>
-            <td><p><a style="color: blue;" href="/admin/delete-article/{{a[0]}}">Cancella</a></p></td>
-          </tr>
-      {%endfor%}
-    </table>
-  </body>
-  <footer>
-  </footer>
-</html>
+    {% endfor %}
+  </table>
+  <a id="button" href="{{url_for('admin.add_article')}}"><button class="btn btn-dark">Aggiungi articolo</button></a>
+  <a id="button" href="{{url_for('admin.add_game')}}"><button class="btn btn-dark">Aggiungi gioco</button></a>
+{% endblock %}

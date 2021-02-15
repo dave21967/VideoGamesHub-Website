@@ -1,50 +1,28 @@
-<!DOCTYPE html>
-<html lang="it" dir="ltr">
-  <head>
-    <meta charset="utf-8">
-    <meta content="width=device-width, initial-scale=1" name="viewport" />
-    <link rel="stylesheet" href="{{url_for('static', filename='css/index.css')}}">
-    <link rel="stylesheet" href="{{url_for('static', filename='css/menu.css')}}">
-    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <title>VideoGames Hub - Giochi</title>
-  </head>
-  <header>
-    <div class="img-block"><img src="{{url_for('static', filename='images/LOGOsmall.png')}}" alt="VideoGames Hub logo"><br></div>
-    <div class="menu">
-      <button class="menu-btn"> MENU
-        <ul class="menu-content">
-          <li class="active"><a href="#">APP</a></li>
-          <li><a href="{{url_for('index')}}">HOME</a></li>
-          <li><a href="{{url_for('login')}}">ACCEDI</a></li>
-          <li><a href="{{url_for('articles')}}">ARTICOLI</a></li>
-          <li><a href="{{url_for('contacts')}}">CONTATTI</a></li>
-        </ul>
-      </button>
-    </div>
-  </header>
-  <body>
-    <h1>GIOCHI</h1>
-    <table border="5px;">
-      <tr>
+{% extends "template.html" %}
+{% block head %}
+  {{super()}}
+  <title>{% block title %}Giochi{% endblock %}</title>
+{% endblock %}
+{% block menu %}
+  {{super()}}
+{% endblock %}
+{% block content %}
+  {{super()}}
+  <h1>GIOCHI</h1>
+    <table class="table">
+      <tr class="table-dark">
         <th>Titolo</th>
         <th>Descrizione</th>
         <th>Downloads</th>
         <th>Scarica ora</th>
       </tr>
       {%for f in data%}
-        <tr>
+        <tr class="table-light">
           <td>{{f.titolo}}</td>
           <td>{{f.descrizione|safe}}</td>
           <td>{{f.downloads}}</td>
-          <td><button><a style="color: blue;" href="/games/?filename={{f.nome_file}}">Dowload</a></button></td>
+          <td><a style="color: blue;" href="/games/?filename={{f.nome_file}}"><button class="btn btn-dark">Download</button></a></td>
         </tr>
       {%endfor%}
     </table>
-  </body>
-  <footer>
-    <script type="text/javascript">
-      $("body").hide();
-      $("body").fadeIn(2000);
-    </script>
-  </footer>
-</html>
+{% endblock %}

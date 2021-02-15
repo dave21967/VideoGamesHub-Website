@@ -1,40 +1,33 @@
-<!DOCTYPE html>
-<html lang="it" dir="ltr">
-  <head>
-    <meta charset="utf-8">
-    <meta content="width=device-width, initial-scale=1" name="viewport" />
-    <link rel="stylesheet" href="{{url_for('static', filename='css/index.css')}}">
-    <link rel="stylesheet" href="{{url_for('static', filename='css/menu.css')}}">
-    <script src="{{url_for('static', filename='javascript/jquery.js')}}"></script>
-    <title>VideoGames Hub - Aggiungi articolo</title>
-  </head>
-  <header>
-    <div class="img-block"><img src="{{url_for('static', filename='images/LOGOsmall.png')}}" alt="VideoGames Hub logo"><br></div>
-    <h1></h1>
-    <div class="menu">
-      <button class="menu-btn"> MENU
-        <ul class="menu-content">
-          <li class="active"><a href="{{url_for('index')}}">HOME</a></li>
-          <li><a href="{{url_for('admin.index')}}">AMMINISTRAZIONE</a></li>
-        </ul>
-      </button>
-    </div>
-  </header>
-  <body>
-    <h1>Benvenuto admin</h1>
-    <h3>Aggiungi articolo</h3>
+{% extends "template.html" %}
+{% block head %}
+  {{super()}}
+  <title>{% block title %}Aggiungi articolo{% endblock %}</title>
+  <style>
+    #form {
+      position: relative;
+      left: 20%;
+    }
+  </style>
+{% endblock %}
+{% block menu %}
+  {{super()}}
+{% endblock %}
+{% block content %}
+  {{super()}}
+  <div id="form" class="container-fluid">
+    <h1>Aggiungi articolo</h1>
+    <h3>Qui puoi aggiungere un nuovo articolo al tuo blog.</h3><br>
     <form method="POST" enctype="multipart/form-data">
-        <input name="titolo" placeholder="Titolo dell'articolo"><br>
-        <textarea name="contenuto" placeholder="Testo articolo" rows="20" cols="40"></textarea><br>
-        <input type="file" accept="image/*" placeholder="Immagine copertina" name="images"><br>
-        <select name="categoria">
-            <option value="videogiochi">Videogiochi</option>
-            <option value="notizie e curiosita">Notizie e curiosita'</option>
-        </select>
-        <input type="submit" value="Invia">
+      <input style="width: 50%;" placeholder="Titolo" class="form-control" type="text" name="titolo"><br>
+      <textarea style="width: 50%;" placeholder="Contenuto" class="form-control" rows="10" name="contenuto"></textarea><br>
+      <input style="width: 50%;" class="form-control" type="file" accept="images/*" name="images"><br>
+      <input style="width: 50%;" placeholder="Anteprima articolo" class="form-control" type="text" name="anteprima"><br>
+      <select style="width: 50%;" name="categoria" class="form-select">
+        <option selected>Seleziona</option>
+        <option value="videogiochi">Videogiochi</option>
+        <option value="notizie e curiosita">Notizie e curiosità</option>
+      </select><br>
+      <input type="submit" value="Pubblica articolo" class="btn btn-dark">
     </form>
-  </body>
-  <footer>
-
-  </footer>
-</html>
+  </div>
+{% endblock %}
