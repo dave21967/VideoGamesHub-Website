@@ -17,9 +17,26 @@
 {% endblock %}
 {% block menu %}
   {{super()}}
+  {% block dropdown_content %}
+      <ul class="dropdown-menu">
+        {% if session %}
+          <li><a class="dropdown-item" href="/user/{{name}}/myProfile">{{name}}</a></li>
+          <li><a class="dropdown-item" href="{{url_for('logout')}}">Esci</a></li>
+          <li><a class="dropdown-item" href="{{url_for('admin.index')}}">Pannello di controllo</a></li>
+        {% else %}
+          <li><a class="dropdown-item" href="{{url_for('login')}}">Accedi</a></li>
+          <li><a class="dropdown-item" href="{{url_for('signup')}}">Registrati</a></li>
+          <li><a class="dropdown-item" href="{{url_for('admin.dashboard')}}">Pannello di controllo</a></li>
+          <li class="dropdown-divider"></li>
+          <li><a class="dropdown-item" href="#">Privacy</a></li>
+        {% endif %}
+      </ul>
+    {% endblock %}
 {% endblock %}
 {% block content %}
   {{super()}}
+  <h1>Administrator dashboard</h1>
+  <h3>Articoli</h3>
   <table class="table">
     <tr class="table-dark">
       <th>Titolo</th>
@@ -38,4 +55,5 @@
   </table>
   <a id="button" href="{{url_for('admin.add_article')}}"><button class="btn btn-dark">Aggiungi articolo</button></a>
   <a id="button" href="{{url_for('admin.add_game')}}"><button class="btn btn-dark">Aggiungi gioco</button></a>
+  <a id="button" href="{{url_for('admin.add_admin')}}"><button class="btn btn-dark">Aggiungi utente admin</button></a>
 {% endblock %}

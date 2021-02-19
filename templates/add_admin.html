@@ -1,7 +1,13 @@
 {% extends "template.html" %}
 {% block head %}
   {{super()}}
-  <title>{% block title %}Giochi{% endblock %}</title>
+  <title>{% block title %}Aggiungi articolo{% endblock %}</title>
+  <style>
+    #form {
+      position: relative;
+      left: 20%;
+    }
+  </style>
 {% endblock %}
 {% block menu %}
   {{super()}}
@@ -23,21 +29,14 @@
 {% endblock %}
 {% block content %}
   {{super()}}
-  <h1>GIOCHI</h1>
-    <table class="table">
-      <tr class="table-dark">
-        <th>Titolo</th>
-        <th>Descrizione</th>
-        <th>Downloads</th>
-        <th>Scarica ora</th>
-      </tr>
-      {%for f in data%}
-        <tr class="table-light">
-          <td>{{f.titolo}}</td>
-          <td>{{f.descrizione|safe}}</td>
-          <td>{{f.downloads}}</td>
-          <td><a style="color: blue;" href="/games/?filename={{f.nome_file}}"><button class="btn btn-dark">Download</button></a></td>
-        </tr>
-      {%endfor%}
-    </table>
+  <div id="form" class="container-fluid">
+    <h1>Aggiungi admin</h1>
+    <h3>Qui puoi aggiungere account amministratori</h3><br>
+    <form method="POST" enctype="multipart/form-data">
+      <input style="width: 50%;" placeholder="Username" class="form-control" type="text" name="username"><br>
+      <input style="width: 50%;" placeholder="Email" class="form-control" type="email" name="email"><br>
+      <input style="width: 50%;" placeholder="Password" class="form-control" type="password" name="password"><br>
+      <input type="submit" value="Aggiungi admin" class="btn btn-dark">
+    </form>
+  </div>
 {% endblock %}
