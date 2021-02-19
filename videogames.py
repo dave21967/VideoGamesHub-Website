@@ -21,7 +21,10 @@ def index():
         for i in result:
             data.append(Gioco(i[0], i[1], i[2], i[3]))
         conn.close()
-        return render_template("games.html", data=data)
+        if "username" in session:
+            return render_template("games.html", data=data, name=session["username"])
+        else:
+            return render_template("games.html", data=data, name="")
 
 @games.route("/download/<filename>")
 def download(filename):

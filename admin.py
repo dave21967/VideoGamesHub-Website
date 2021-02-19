@@ -2,14 +2,36 @@ from flask import Blueprint, render_template, session, redirect, url_for, curren
 import sqlite3
 import uuid
 from smtplib import SMTP
-from model import Articolo
+from model import Articolo, Utente
 import os
 from datetime import datetime
 
 admin = Blueprint("admin", __name__, template_folder="templates", static_folder="static")
 
-@admin.route("/")
+@admin.route("/", methods=['POST','GET'])
 def index():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        conn = sqlite3.connect(current_app.config['DB_NAME'])
+        cur = conn.cursor()
+        cur.execute("SELECT username, password FROM utenti WHERE username = ? AND password = ? AND permessi_admin = 1", (username, password))
+        if len(cur.fetchall()) > 0:
+            conn.close()
+            session['username'] = username
+            session['permissions'] = 1
+            return redirect(url_for('admin.dashboard'))
+        else:
+            return f"<h1>Errore: Nessun utente registrato come {username}</h1>"
+    else:
+        if "username" in session and session["permissions"] == 1:
+            return redirect(url_for("admin.dashboard"))
+        else:
+            return render_template("login.html")
+
+
+@admin.route("/dashboard")
+def dashboard():
     if 'username' in session:
         conn = sqlite3.connect(current_app.config['DB_NAME'])
         cur=conn.cursor()
@@ -18,9 +40,10 @@ def index():
         cur.execute("SELECT titolo,categoria,data_pubblicazione FROM articoli")
         arts = cur.fetchall()
         conn.close()
-        return render_template("admin.html", visits=current_app.config['VISITS'], data=result, articles=arts)
+        return render_template("admin.html", visits=current_app.config['VISITS'], data=result, articles=arts, name=session["username"])
     else:
-        return redirect(url_for("login"))
+        return redirect(url_for("admin.index"))
+
 
 @admin.route("/add-article", methods=['GET', 'POST'])
 def add_article():
@@ -61,7 +84,7 @@ def delete_article(title):
         cur.execute("DELETE FROM articoli WHERE titolo = ?", (title, ))
         conn.commit()
         conn.close()
-        return redirect(url_for("admin.index"))
+        return redirect(url_for("admin.dashboard"))
     else:
         return redirect(url_for("login"))
 
@@ -79,10 +102,32 @@ def add_game():
                 conn.commit()
                 conn.close()
                 game.save(os.path.join(current_app.config["GAMES-UPLOADS"], game.filename))
-                return redirect(url_for("admin.index"))
+                return redirect(url_for("admin.dashboard"))
             except Exception as e:
                 return f"Errore: {e}"
         else:
             return render_template("add_game.html")
     else:
         return redirect(url_for("login"))
+
+@admin.route("/add-admin-user", methods=["GET", "POST"])
+def add_admin():
+    if "username" in session:
+        if request.method == "POST":
+            try:
+                username = request.form["username"]
+                email = request.form["email"]
+                password = request.form["password"]
+                usr = Utente(username,email,password,1,1)
+                conn = sqlite3.connect(current_app.config["DB_NAME"])
+                cur = conn.cursor()
+                cur.execute("INSERT INTO utenti VALUES (?,?,?,1,1)",(usr.username,usr.email,usr.password,))
+                conn.commit()
+                conn.close()
+                return redirect(url_for("admin.dashboard"))
+            except Exception as e:
+                return "Errore nel salvataggio: "+str(e)
+        else:
+            return  render_template("add_admin.html", name=session["username"])
+    else:
+        return redirect(url_for('admin.login'))

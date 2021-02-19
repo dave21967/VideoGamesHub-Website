@@ -51,9 +51,12 @@ def contacts():
             mail.login("videogameshub01@gmail.com", "Xcloseconnect68")
             mail.sendmail("videogameshub01@gmail.com", "davide.costantini2001@gmail.com", "Subject: E' stato segnalato un problema\n\nUn utente ha segnalato un problema\n"+problem+"")
             mail.quit()
-            return render_template("contacts.html")
+            return render_template("contacts.html", name=session["username"])
     else:
-        return render_template('contacts.html')
+        if "username" in session:
+            return render_template("contacts.html", name=session["username"])
+        else:
+            return render_template("contacts.html")
 
 @app.route("/login", methods=['POST','GET'])
 def login():
@@ -66,10 +69,8 @@ def login():
         if len(cur.fetchall()) > 0:
             conn.close()
             session['username'] = username
-            if username == 'admin':
-                return redirect(url_for('admin.index'))
-            else:
-                return redirect(url_for('index'))
+            session['permissions'] = 0
+            return redirect(url_for('index'))
         else:
             return f"<h1>Errore: Nessun utente registrato come {username}</h1>"
     else:
@@ -78,6 +79,7 @@ def login():
 @app.route("/logout")
 def logout():
     session.pop("username", None)
+    session.pop("permissions", None)
     return redirect(url_for('index'))
 
 @app.route("/signup", methods=['POST', 'GET'])
