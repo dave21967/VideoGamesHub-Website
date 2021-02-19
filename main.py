@@ -126,6 +126,8 @@ def articles():
             cur.execute("SELECT * FROM articoli WHERE titolo LIKE ? ORDER BY titolo", ("%"+title+"%", ))
         elif filtro == "views":
             cur.execute("SELECT * FROM articoli WHERE titolo LIKE ? ORDER BY visualizzazioni DESC", ("%"+title+"%", ))
+        else:
+            cur.execute("SELECT * FROM articoli WHERE titolo LIKE ?", ("%"+title+"%", ))
         result = cur.fetchall()
         conn.close()
     else:
