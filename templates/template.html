@@ -13,9 +13,9 @@
 </head>
 <body>
     {% block menu %}
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div class="container-fluid">
-          <a class="navbar-brand" href="{{url_for('index')}}"><img width="100px" src="{{url_for('static', filename='images/LOGOsmall.jpg')}}"></a>
+    <nav class="navbar sticky-top navbar-expand-lg navbar-dark bg-dark">
+      <div class="container-fluid">
+          <a class="navbar-brand" href="{{url_for('index')}}"><img width="100px" src="{{url_for('static', filename='images/VHLOGO.png')}}"></a>
           <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
           </button>
@@ -41,10 +41,16 @@
                 {% endblock %}
             </li>
           </ul>
-            </div>
           </div>
         </div>
-      </nav>
+        {% block searchbar %}
+          <form class="d-flex" action="/articles" method="GET">
+            <input class="form-control me-2" type="search" name="titolo" placeholder="Cerca articolo" aria-label="Cerca">
+            <button class="btn btn-outline-light" type="submit">Cerca</button>
+          </form>
+        {% endblock %}
+      </div>
+    </nav>
       {% endblock %}
       {% block content %}
         <div id="content" class="container-fluid">

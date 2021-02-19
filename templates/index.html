@@ -46,6 +46,10 @@
             left: 43%;
             width: 5%;
         }
+        #sliderImg {
+            width: 100%;
+            height: 800px;
+        }
         @media only screen and (max-width: 600px) {
             #insta-logo {
                 position: relative;
@@ -72,6 +76,10 @@
             #form-domande {
                 position: relative;
                 left: 0%;
+            }
+            #sliderImg {
+                width: 100%;
+                height: 300px;
             }
         }
     </style>
@@ -109,7 +117,26 @@
     <a href="https://www.instagram.com/videogameshub.it/"><img id="insta-logo" src="{{url_for('static', filename='images/instagram.png')}}"></a>
     <a href="https://www.pinterest.it/Johnny_pixelart_01/videogameshub/"><img id="pint-logo" src="{{url_for('static', filename='images/pinterest.png')}}"></a>
     <a href="https://www.twitch.tv/videogameshub_"><img id="twitch-logo" src="{{url_for('static', filename='images/twitch.png')}}"></a>
-    <form id="form-domande" method="POST">
+    <p style="font-family: Hack; text-align: center;">Preview</p>
+    <div id="carouselExampleFade" class="carousel slide carousel-fade" data-bs-ride="carousel">
+        <div class="carousel-inner">
+          <div class="carousel-item active">
+            <img id="sliderImg" src="{{url_for('static', filename='/images/slider/Grafica.jpeg')}}" class="d-block w-100">
+          </div>
+          <div class="carousel-item">
+            <img id="sliderImg" src="{{url_for('static', filename='/images/slider/MenuBg.png')}}" class="d-block w-100">
+          </div>
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleFade"  data-bs-slide="prev">
+          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleFade"  data-bs-slide="next">
+          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Next</span>
+        </button>
+      </div>
+      <form id="form-domande" method="POST">
         <div class="mb-3">
             <label for="exampleFormControlTextarea1" class="form-label">Per suggerimenti e richieste:</label>
             <textarea class="form-control" name="question" id="txt-area" rows="3"></textarea><br>
