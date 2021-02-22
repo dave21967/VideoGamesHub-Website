@@ -22,12 +22,12 @@ def index():
             session['permissions'] = 1
             return redirect(url_for('admin.dashboard'))
         else:
-            return f"<h1>Errore: Nessun utente registrato come {username}</h1>"
+            return render_template("admin_login.html", error=f"Errore: Nessun utente registrato come {username}")
     else:
         if "username" in session and session["permissions"] == 1:
             return redirect(url_for("admin.dashboard"))
         else:
-            return render_template("login.html")
+            return render_template("admin_login.html")
 
 
 @admin.route("/dashboard")
@@ -75,6 +75,30 @@ def add_article():
             return render_template("add_article.html")
         else:
             return redirect(url_for('login'))
+
+@admin.route("/edit-article/<title>", methods=["GET", "POST"])
+def edit_article(title):
+    if "username" in session:
+        if request.method == "POST":
+            art = Articolo(request.form["titolo"], request.form["contenuto"], request.form["categoria"], "", request.form["anteprima"])
+            conn = sqlite3.connect(current_app.config["DB_NAME"])
+            cur = conn.cursor()
+            cur.execute("UPDATE articoli SET titolo = ?, contenuto = ?, categoria = ?, anteprima_testo = ? WHERE titolo = ?", (art.titolo, art.contenuto, art.categoria, art.anteprima, title,))
+            conn.commit()
+            conn.close()
+            return redirect(url_for("admin.dashboard"))
+        else:
+            conn = sqlite3.connect(current_app.config["DB_NAME"])
+            cur = conn.cursor()
+            cur.execute("SELECT titolo, contenuto, categoria, anteprima_testo FROM articoli WHERE titolo = ?", (title, ))
+            result = cur.fetchall()
+            for i in result:
+                art = Articolo(i[0], i[1], i[2], "", i[3])
+            conn.commit()
+            conn.close()
+            return render_template("edit_article.html", title=art.titolo, content=art.contenuto, preview=art.anteprima, cathegory=art.categoria)
+    else:
+        return redirect(url_for("admin.index"))
 
 @admin.route("/delete-article/<title>")
 def delete_article(title):
@@ -126,7 +150,7 @@ def add_admin():
                 conn.close()
                 return redirect(url_for("admin.dashboard"))
             except Exception as e:
-                return "Errore nel salvataggio: "+str(e)
+                return render_template("add_admin.html", error=f"Errore nel salvataggio: {str(e)}")
         else:
             return  render_template("add_admin.html", name=session["username"])
     else:

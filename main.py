@@ -1,4 +1,4 @@
-from flask import Flask, render_template, flash, request, redirect, url_for, make_response, session
+from flask import Flask, render_template, request, redirect, url_for, session
 import sqlite3
 from smtplib import SMTP
 from datetime import *
@@ -72,7 +72,7 @@ def login():
             session['permissions'] = 0
             return redirect(url_for('index'))
         else:
-            return f"<h1>Errore: Nessun utente registrato come {username}</h1>"
+            return render_template("login.html", error=f"Nessun utente trovato con il nome di{username}")
     else:
         return render_template("login.html")
 
@@ -94,7 +94,7 @@ def signup():
             conn = sqlite3.connect(app.config['DB_NAME'])
             cur = conn.cursor()
             try:
-                cur.execute(f"INSERT INTO utenti VALUES (?,?,?,1)", (username, email, password,))
+                cur.execute(f"INSERT INTO utenti VALUES (?,?,?,1,1)", (username, email, password,))
                 conn.commit()
                 conn.close()
                 mail = SMTP("smtp.gmail.com", 587)
@@ -113,21 +113,11 @@ def signup():
 
 @app.route("/articles", methods=["GET", "POST"])
 def articles():
-    if request.args.get("titolo") or request.args.get("filtro"):
+    if request.args.get("titolo"):
         title = request.args.get("titolo")
-        filtro = request.args.get("filtro")
         conn = sqlite3.connect(app.config['DB_NAME'])
         cur=conn.cursor()
-        if filtro == "recente":
-            cur.execute("SELECT * FROM articoli WHERE titolo LIKE ? ORDER BY data_pubblicazione DESC", ("%"+title+"%", ))
-        elif filtro == "vecchio":
-            cur.execute("SELECT * FROM articoli WHERE titolo LIKE ? ORDER BY data_pubblicazione ASC", ("%"+title+"%", ))
-        elif filtro == "titolo":
-            cur.execute("SELECT * FROM articoli WHERE titolo LIKE ? ORDER BY titolo", ("%"+title+"%", ))
-        elif filtro == "views":
-            cur.execute("SELECT * FROM articoli WHERE titolo LIKE ? ORDER BY visualizzazioni DESC", ("%"+title+"%", ))
-        else:
-            cur.execute("SELECT * FROM articoli WHERE titolo LIKE ?", ("%"+title+"%", ))
+        cur.execute("SELECT * FROM articoli WHERE titolo LIKE ?", ("%"+title+"%", ))
         result = cur.fetchall()
         conn.close()
     else:
@@ -148,12 +138,14 @@ def view_article(title):
     cur.execute("SELECT * FROM articoli WHERE titolo = ?", (title,))
     result = cur.fetchall()
     cur.execute("UPDATE articoli SET visualizzazioni = visualizzazioni + 1 WHERE titolo = ?", (title, ))
+    for i in result:
+        art = Articolo(i[0],i[1],[3],i[2],i[6])
     conn.commit()
     conn.close()
     if "username" in session:
-        return render_template("article.html", title=title, content=f"{result[0][1]}", name=session["username"])
+        return render_template("article.html", title=title, content=f"{art.contenuto}", name=session["username"])
     else:
-        return render_template("article.html", title=title, content=f"{result[0][1]}")
+        return render_template("article.html", title=title, content=f"{art.contenuto}")
 
 if __name__ == '__main__':
     app.run(debug=True, host="0.0.0.0")
