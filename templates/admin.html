@@ -37,6 +37,7 @@
   {{super()}}
   <h1>Administrator dashboard</h1>
   <h3>Articoli</h3>
+  <h3>Visite: {{visits}}</h3>
   <table class="table">
     <tr class="table-dark">
       <th>Titolo</th>
@@ -49,7 +50,12 @@
         <td>{{a[0]}}</td>
         <td>{{a[1]}}</td>
         <td>{{a[2]}}</td>
-        <td><a href="/admin/delete-article/{{a[0]}}"><button class="btn btn-dark">Cancella</button></a></td>
+        <td>
+          <div class="btn-group" role="group">
+            <a href="/admin/delete-article/{{a[0]}}"><button class="btn btn-dark">Cancella</button></a>
+            <a href="/admin/edit-article/{{a[0]}}"><button class="btn btn-dark">Modifica</button></a>
+          </div>
+        </td>
       </tr>
     {% endfor %}
   </table>
