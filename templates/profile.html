@@ -1,40 +1,27 @@
-<!DOCTYPE html>
-<html lang="it" dir="ltr">
-  <head>
-    <meta charset="utf-8">
-    <meta content="width=device-width, initial-scale=1" name="viewport" />
-    <link rel="stylesheet" href="{{url_for('static', filename='/css/index.css')}}">
-    <link rel="stylesheet" href="{{url_for('static', filename='/css/menu.css')}}">
-    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <title>VideoGames Hub - MyProfile</title>
-  </head>
-  <header>
-    <div class="img-block"><img src="{{url_for('static', filename='images/LOGOsmall.png')}}" alt="VideoGames Hub logo"><br></div>
-    <div class="menu">
-      <button class="menu-btn"> MENU
-        <ul class="menu-content">
-          <li class="active"><a href="#">APP</a></li>
-          <li><a href="{{url_for('index')}}">HOME</a></li>
-          <li><a href="{{url_for('articles')}}">ARTICOLI</a></li>
-          <li><a href="{{url_for('contacts')}}">CONTATTI</a></li>
-        </ul>
-      </button>
-    </div>
-  </header>
-  <body>
-    <h1>{{username}}</h1>
-    <h2>Qui puoi modificare i tuoi dati e visualizzare i tuoi articoli preferiti.</h2>
-    <form method="POST">
-        <label>Username </label><input type="text" name="username"><br>
-        <label>Email </label><input type="email" name="email"><br>
-        <label>Password </label><input type="password" name="password"><br>
-        <input type="submit" value="Salva">
-        <button><a href="{{url_for('index')}}" style="color: blue;">Cancella</a></button>
-    </form>
-    <br>
-    <br>
-    <h1>Preferiti</h1>
-  </body>
-  <footer>
-  </footer>
-</html>
+{% extends "template.html" %}
+{% block head %}
+  {{super()}}
+  <title>{% block title %}VideoGamesHub - Profilo{% endblock %}</title>
+{% endblock %}
+{% block menu %}
+    {{super()}}
+    {% block dropdown_content %}
+      <ul class="dropdown-menu">
+        {% if session %}
+          <li><a class="dropdown-item" href="/user/{{name}}/myProfile">{{name}}</a></li>
+          <li><a class="dropdown-item" href="{{url_for('logout')}}">Esci</a></li>
+          <li><a class="dropdown-item" href="{{url_for('admin.index')}}">Pannello di controllo</a></li>
+        {% else %}
+          <li><a class="dropdown-item" href="{{url_for('login')}}">Accedi</a></li>
+          <li><a class="dropdown-item" href="{{url_for('signup')}}">Registrati</a></li>
+          <li><a class="dropdown-item" href="{{url_for('admin.dashboard')}}">Pannello di controllo</a></li>
+          <li class="dropdown-divider"></li>
+          <li><a class="dropdown-item" href="#">Privacy</a></li>
+        {% endif %}
+      </ul>
+    {% endblock %}
+{% endblock %}
+{% block content %}
+  {{super()}}
+  <h1>Mio Profilo - {{username}}</h1>
+{% endblock %}
