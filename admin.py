@@ -53,7 +53,7 @@ def add_article():
             art.immagine.save(current_app.config['UPLOADS']+art.immagine.filename)
             conn = sqlite3.connect(current_app.config['DB_NAME'])
             cur=conn.cursor()
-            cur.execute("INSERT INTO articoli VALUES (?,?,?,?,?,?,?)", (art.titolo, art.contenuto, art.immagine.filename, art.categoria,datetime.now(), 0,art.anteprima))
+            cur.execute("INSERT INTO articoli VALUES (?,?,?,?,?,?,?)", (art.titolo, art.contenuto, art.immagine.filename, art.categoria,datetime.today().strftime("%d-%m-%Y"), 0,art.anteprima))
             cur.execute("SELECT email FROM utenti WHERE username <> 'admin' AND newsletter = 1")
             emails = cur.fetchall()
             if len(emails) > 0:
@@ -105,7 +105,10 @@ def delete_article(title):
     if "username" in session:
         conn = sqlite3.connect(current_app.config["DB_NAME"])
         cur=conn.cursor()
+        cur.execute("SELECT immagini FROM articoli WHERE titolo = ?", (title, ))
+        result=cur.fetchall()
         cur.execute("DELETE FROM articoli WHERE titolo = ?", (title, ))
+        os.remove(os.path.join(current_app.config["UPLOADS"], str(result[0][0])))
         conn.commit()
         conn.close()
         return redirect(url_for("admin.dashboard"))
@@ -122,7 +125,7 @@ def add_game():
             try:
                 conn = sqlite3.connect(current_app.config['DB_NAME'])
                 cur=conn.cursor()
-                cur.execute("INSERT INTO giochi VALUES (?,?,?,0,?)", (title, datetime.now(),game.filename, descr))
+                cur.execute("INSERT INTO giochi VALUES (?,?,?,0,?)", (title, datetime.today().strftime("%d-%m-%Y"),game.filename, descr))
                 conn.commit()
                 conn.close()
                 game.save(os.path.join(current_app.config["GAMES-UPLOADS"], game.filename))
