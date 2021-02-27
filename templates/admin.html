@@ -59,6 +59,28 @@
       </tr>
     {% endfor %}
   </table>
+  <h3>Giochi</h3>
+  <table class="table">
+    <tr class="table-dark">
+      <th>Titolo</th>
+      <th>Descrizione</th>
+      <th>Downloads</th>
+      <th></th>
+    </tr>
+    {% for g in games %}
+      <tr class="table-light">
+        <td>{{g[0]}}</td>
+        <td>{{g[1]}}</td>
+        <td>{{g[2]}}</td>
+        <td>
+          <div class="btn-group" role="group">
+            <a href="/admin/delete-game/{{g[0]}}"><button class="btn btn-dark">Cancella</button></a>
+            <a href="/admin/edit-game/{{g[0]}}"><button class="btn btn-dark">Modifica</button></a>
+          </div>
+        </td>
+      </tr>
+    {% endfor %}
+  </table>
   <a id="button" href="{{url_for('admin.add_article')}}"><button class="btn btn-dark">Aggiungi articolo</button></a>
   <a id="button" href="{{url_for('admin.add_game')}}"><button class="btn btn-dark">Aggiungi gioco</button></a>
   <a id="button" href="{{url_for('admin.add_admin')}}"><button class="btn btn-dark">Aggiungi utente admin</button></a>
