@@ -2,7 +2,7 @@ from flask import Blueprint, render_template, session, redirect, url_for, curren
 import sqlite3
 import uuid
 from smtplib import SMTP
-from model import Articolo, Utente
+from model import Articolo, Utente, Gioco
 import os
 from datetime import datetime
 
@@ -39,8 +39,10 @@ def dashboard():
         result = cur.fetchall()
         cur.execute("SELECT titolo,categoria,data_pubblicazione FROM articoli")
         arts = cur.fetchall()
+        cur.execute("SELECT titolo_gioco,descrizione_gioco,downloads FROM giochi")
+        giochi = cur.fetchall()
         conn.close()
-        return render_template("admin.html", visits=current_app.config['VISITS'], data=result, articles=arts, name=session["username"])
+        return render_template("admin.html", visits=current_app.config['VISITS'], data=result, articles=arts, games=giochi, name=session["username"])
     else:
         return redirect(url_for("admin.index"))
 
@@ -100,6 +102,30 @@ def edit_article(title):
     else:
         return redirect(url_for("admin.index"))
 
+@admin.route("/edit-game/<title>", methods=["GET", "POST"])
+def edit_game(title):
+    if "username" in session:
+        if request.method == "POST":
+            gioco = Gioco(request.form["titolo"], request.form["descrizione"], "", "")
+            conn = sqlite3.connect(current_app.config["DB_NAME"])
+            cur = conn.cursor()
+            cur.execute("UPDATE giochi SET titolo_gioco = ?, descrizione_gioco = ? WHERE titolo_gioco = ?", (gioco.titolo,gioco.descrizione, title,))
+            conn.commit()
+            conn.close()
+            return redirect(url_for("admin.dashboard"))
+        else:
+            conn = sqlite3.connect(current_app.config["DB_NAME"])
+            cur = conn.cursor()
+            cur.execute("SELECT titolo_gioco, descrizione_gioco FROM giochi WHERE titolo_gioco = ?", (title, ))
+            result = cur.fetchall()
+            for i in result:
+                gioco = Gioco(i[0], i[1],"","")
+            conn.commit()
+            conn.close()
+            return render_template("edit_game.html", game=gioco)
+    else:
+        return redirect(url_for("admin.index"))
+
 @admin.route("/delete-article/<title>")
 def delete_article(title):
     if "username" in session:
@@ -134,6 +160,21 @@ def add_game():
                 return f"Errore: {e}"
         else:
             return render_template("add_game.html")
+    else:
+        return redirect(url_for("login"))
+
+@admin.route("/delete-game/<title>")
+def delete_game(title):
+    if "username" in session:
+        conn = sqlite3.connect(current_app.config["DB_NAME"])
+        cur=conn.cursor()
+        cur.execute("SELECT nome_file FROM giochi WHERE titolo_gioco = ?", (title, ))
+        result=cur.fetchall()
+        cur.execute("DELETE FROM giochi WHERE titolo_gioco = ?", (title, ))
+        os.remove(os.path.join(current_app.config["GAMES-UPLOADS"], str(result[0][0])))
+        conn.commit()
+        conn.close()
+        return redirect(url_for("admin.dashboard"))
     else:
         return redirect(url_for("login"))
 
