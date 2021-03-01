@@ -46,6 +46,12 @@
                   <a class="nav-link" href="{{url_for('games.index')}}">Giochi</a>
                   <a class="nav-link" href="#">App</a>
                   <a class="nav-link active" href="{{url_for('contacts')}}">Contatti</a>
+                {% elif request.path == "/admin/dashboard" %}
+                  <li><a class="nav-link active" href="{{url_for('admin.index')}}">Pannello di controllo</a></li>
+                  <li><a class="nav-link" href="{{url_for('files.index')}}">Visualizza file caricati</a></li>
+                {% elif request.path == "/files/"%}
+                  <li><a class="nav-link" href="{{url_for('admin.dashboard')}}">Pannello di controllo</a></li>
+                  <li><a class="nav-link active" href="{{url_for('files.index')}}">Visualizza file caricati</a></li>
                 {% endif %}
               {% endblock %}
               <li class="nav-item dropdown">

@@ -23,4 +23,5 @@
   {{super()}}
   <h1>{{title}}</h1>
   {{content | safe}}
+  <br><br><a href="{{url_for('articles')}}"><button class="btn btn-dark">Indietro</button></a>
 {% endblock %}
