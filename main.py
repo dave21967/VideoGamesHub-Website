@@ -4,6 +4,7 @@ from smtplib import SMTP
 from datetime import *
 from admin import admin
 from videogames import games
+from files import files
 from user import user
 from model import Articolo
 import os
@@ -12,13 +13,14 @@ app = Flask(__name__, template_folder='templates', static_folder='static')
 app.secret_key = 'hello world!'
 app.config['UPLOADS'] = 'static/uploads/'
 app.config['GAMES-UPLOADS'] = "static/uploads/games/"
-app.config['DB_NAME'] = "videogameshub.db"
+app.config['DB_NAME'] = "test.db"
 app.config['VISITS'] = 0
 app.config['HOSTS'] = []
 
 app.register_blueprint(admin, url_prefix="/admin")
 app.register_blueprint(games, url_prefix="/games")
 app.register_blueprint(user, url_prefix="/user")
+app.register_blueprint(files, url_prefix="/files")
 
 @app.route("/", methods=["GET", "POST"])
 def index():
