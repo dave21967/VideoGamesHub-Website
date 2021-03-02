@@ -1,21 +1,13 @@
-from flask import Flask, render_template, request, redirect, url_for, session
-import sqlite3
+from flask import render_template, request, redirect, url_for, session
 from smtplib import SMTP
+import sqlite3
 from datetime import *
 from admin import admin
 from videogames import games
 from files import files
 from user import user
-from model import Articolo
+from model import Utente, db, app, Articolo
 import os
-
-app = Flask(__name__, template_folder='templates', static_folder='static')
-app.secret_key = 'hello world!'
-app.config['UPLOADS'] = 'static/uploads/'
-app.config['GAMES-UPLOADS'] = "static/uploads/games/"
-app.config['DB_NAME'] = "test.db"
-app.config['VISITS'] = 0
-app.config['HOSTS'] = []
 
 app.register_blueprint(admin, url_prefix="/admin")
 app.register_blueprint(games, url_prefix="/games")
@@ -65,11 +57,8 @@ def login():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        conn = sqlite3.connect(app.config['DB_NAME'])
-        cur = conn.cursor()
-        cur.execute("SELECT username, password FROM utenti WHERE username = ? AND password = ?", (username, password))
-        if len(cur.fetchall()) > 0:
-            conn.close()
+        users = Utente.query.filter_by(username=username, password=password).all()
+        if len(users) > 0:
             session['username'] = username
             session['permissions'] = 0
             return redirect(url_for('index'))
@@ -93,12 +82,10 @@ def signup():
         if not email or not password or not username:
             return render_template("signup.html", error="Tutti i campi sono obbligatori")
         else:
-            conn = sqlite3.connect(app.config['DB_NAME'])
-            cur = conn.cursor()
             try:
-                cur.execute(f"INSERT INTO utenti VALUES (?,?,?,1,1)", (username, email, password,))
-                conn.commit()
-                conn.close()
+                usr = Utente(username, email, password, 0)
+                db.session.add(usr)
+                db.session.commit()
                 mail = SMTP("smtp.gmail.com", 587)
                 mail.ehlo()
                 mail.starttls()
@@ -117,17 +104,9 @@ def signup():
 def articles():
     if request.args.get("titolo"):
         title = request.args.get("titolo")
-        conn = sqlite3.connect(app.config['DB_NAME'])
-        cur=conn.cursor()
-        cur.execute("SELECT * FROM articoli WHERE titolo LIKE ?", ("%"+title+"%", ))
-        result = cur.fetchall()
-        conn.close()
+        result=Articolo.query.filter(Articolo.titolo.like(f"%{title}%"))
     else:
-        conn = sqlite3.connect(app.config['DB_NAME'])
-        cur=conn.cursor()
-        cur.execute("SELECT * FROM articoli ORDER BY data_pubblicazione DESC")
-        result = cur.fetchall()
-        conn.close()
+        result = Articolo.query.order_by(Articolo.data_pubblicazione.desc())
     if "username" in session:
         return render_template("user.html", data=result, name=session["username"])
     else:
@@ -135,19 +114,12 @@ def articles():
 
 @app.route("/articles/view/<title>")
 def view_article(title):
-    conn = sqlite3.connect(app.config['DB_NAME'])
-    cur=conn.cursor()
-    cur.execute("SELECT * FROM articoli WHERE titolo = ?", (title,))
-    result = cur.fetchall()
-    cur.execute("UPDATE articoli SET visualizzazioni = visualizzazioni + 1 WHERE titolo = ?", (title, ))
-    for i in result:
-        art = Articolo(i[0],i[1],[3],i[2],i[6])
-    conn.commit()
-    conn.close()
+    arts = Articolo.query.filter_by(titolo=title)
     if "username" in session:
-        return render_template("article.html", title=title, content=f"{art.contenuto}", name=session["username"])
+        return render_template("article.html", article=arts, name=session["username"])
     else:
-        return render_template("article.html", title=title, content=f"{art.contenuto}")
+        return render_template("article.html", article=arts)
 
 if __name__ == '__main__':
+    db.create_all()
     app.run(debug=True, host="0.0.0.0")
