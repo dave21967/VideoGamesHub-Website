@@ -24,25 +24,25 @@
               {% block menuitems %}
                 {% if request.path == "/" %}
                   <a class="nav-link active" aria-current="page" href="{{url_for('index')}}">Home</a>
-                  <a class="nav-link" href="{{url_for('articles')}}">Articoli</a>
+                  <a class="nav-link" href="{{url_for('articles', page=1)}}">Articoli</a>
                   <a class="nav-link" href="{{url_for('games.index')}}">Giochi</a>
                   <a class="nav-link" href="#">App</a>
                   <a class="nav-link" href="{{url_for('contacts')}}">Contatti</a>
-                {% elif request.path == "/articles" %}
+                {% elif "/articles" in request.path %}
                   <a class="nav-link" aria-current="page" href="{{url_for('index')}}">Home</a>
-                  <a class="nav-link active" href="{{url_for('articles')}}">Articoli</a>
+                  <a class="nav-link active" href="{{url_for('articles', page=1)}}">Articoli</a>
                   <a class="nav-link" href="{{url_for('games.index')}}">Giochi</a>
                   <a class="nav-link" href="#">App</a>
                   <a class="nav-link" href="{{url_for('contacts')}}">Contatti</a>
                 {% elif request.path == "/games/" %}
                   <a class="nav-link" aria-current="page" href="{{url_for('index')}}">Home</a>
-                  <a class="nav-link" href="{{url_for('articles')}}">Articoli</a>
+                  <a class="nav-link" href="{{url_for('articles', page=1)}}">Articoli</a>
                   <a class="nav-link active" href="{{url_for('games.index')}}">Giochi</a>
                   <a class="nav-link" href="#">App</a>
                   <a class="nav-link" href="{{url_for('contacts')}}">Contatti</a>
                 {% elif request.path == "/contacts" %}
                   <a class="nav-link" aria-current="page" href="{{url_for('index')}}">Home</a>
-                  <a class="nav-link" href="{{url_for('articles')}}">Articoli</a>
+                  <a class="nav-link" href="{{url_for('articles', page=1)}}">Articoli</a>
                   <a class="nav-link" href="{{url_for('games.index')}}">Giochi</a>
                   <a class="nav-link" href="#">App</a>
                   <a class="nav-link active" href="{{url_for('contacts')}}">Contatti</a>
@@ -78,7 +78,7 @@
           </div>
         </div>
         {% block searchbar %}
-          <form class="d-flex" action="/articles" method="GET">
+          <form class="d-flex" action="/articles/1" method="GET">
             <input class="form-control me-2" type="search" name="titolo" placeholder="Cerca articolo" aria-label="Cerca">
             <button class="btn btn-outline-light" type="submit">Cerca</button>
           </form>
