@@ -100,13 +100,13 @@ def signup():
     else:
         return render_template("signup.html", error="")
 
-@app.route("/articles", methods=["GET", "POST"])
-def articles():
+@app.route("/articles/<page>", methods=["GET", "POST"])
+def articles(page):
     if request.args.get("titolo"):
         title = request.args.get("titolo")
-        result=Articolo.query.filter(Articolo.titolo.like(f"%{title}%"))
+        result=Articolo.query.filter(Articolo.titolo.like(f"%{title}%")).paginate(int(page), per_page=5)
     else:
-        result = Articolo.query.order_by(Articolo.data_pubblicazione.desc())
+        result = Articolo.query.order_by(Articolo.data_pubblicazione.desc()).paginate(int(page), per_page=5)
     if "username" in session:
         return render_template("user.html", data=result, name=session["username"])
     else:
@@ -114,7 +114,9 @@ def articles():
 
 @app.route("/articles/view/<title>")
 def view_article(title):
-    arts = Articolo.query.filter_by(titolo=title)
+    arts = Articolo.query.filter_by(titolo=title).first()
+    arts.visualizzazioni += 1
+    db.session.commit()
     if "username" in session:
         return render_template("article.html", article=arts, name=session["username"])
     else:
