@@ -1,7 +1,7 @@
 {% extends "template.html" %}
 {% block head %}
   {{super()}}
-  <title>{% block title %}{{title}}{% endblock %}</title>
+  <title>{% block title %}{{article[0].titolo}}{% endblock %}</title>
 {% endblock %}
 {% block menu %}
   {{super()}}
@@ -21,7 +21,7 @@
 {% endblock %}
 {% block content %}
   {{super()}}
-  <h1>{{title}}</h1>
-  {{content | safe}}
+  <h1>{{article[0].titolo}}</h1>
+  {{article[0].contenuto | safe}}
   <br><br><a href="{{url_for('articles')}}"><button class="btn btn-dark">Indietro</button></a>
 {% endblock %}

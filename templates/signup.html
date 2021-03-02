@@ -4,11 +4,36 @@
   <title>{% block title %}Registrati{% endblock %}</title>
   <style>
     #buttonSend {
-      width: 100%;
+      width: 40%;
+    }
+    #textInput {
+      width: 40%;
+    }
+    form {
+      padding-left: 35%;
     }
     h1 {
-      position: relative;
-      left: 41%;
+      padding-left: 35%;
+    }
+    #alert {
+      width: 50%;
+    }
+    @media only screen and (max-width: 600px) {
+      #buttonSend {
+        width: 100%;
+      }
+      #textInput {
+        width: 100%;
+      }
+      form {
+        padding-left: 0%;
+      }
+      h1 {
+        padding-left: 0%;
+      }
+      #alert {
+        width: 100%;
+      }
     }
   </style>
 {% endblock %}
@@ -18,30 +43,14 @@
 {% block content %}
   {{super()}}
   <h1>Accedi - Registrati</h1><br><br><br><br>
-  <form class="col-lg-6 offset-lg-5" method="POST">
-    <div class="col-lg-6">
-      <div class="col-sm-10">
-        <input type="email" name="email" class="form-control" placeholder="Email">
-      </div>
-    </div>
-    <div class="col-lg-6">
-      <div class="col-sm-10">
-        <input type="text" name="username" class="form-control" id="formGroupExampleInput2" placeholder="Username">
-      </div>
-    </div>
-    <div class="col-lg-6">
-      <div class="col-sm-10">
-        <input type="password" name="password" class="form-control" id="inputPassword" aria-describedby="passwordHelpInLine" placeholder="Password">
-      </div>
-    </div>
-    <div class="col-lg-6">
-      <div class="col-sm-10">
-        <input type="submit" class="btn btn-primary" id="buttonSend" value="Login">
-      </div>
-    </div>
+  <form method="POST">
+    <input id="textInput" type="email" class="form-control" name="email" placeholder="Email"><br>
+    <input id="textInput" type="text" class="form-control" name="username" placeholder="Username"><br>
+    <input id="textInput" type="password" class="form-control" name="password" placeholder="Password"><br>
+    <input id="buttonSend" type="submit" class="btn btn-dark" value="Registrati"><br>
     <a href="{{url_for('login')}}">Hai già un account?</a>
     {% if error %}
-      <div style="width: 50%;" class="alert alert-danger alert-dismissible fade show" role="alert">
+      <div id="alert" class="alert alert-danger alert-dismissible fade show" role="alert">
         {{error}}
         <button class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
       </div>

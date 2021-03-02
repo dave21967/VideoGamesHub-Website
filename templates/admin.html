@@ -21,6 +21,7 @@
 {% endblock %}
 {% block content %}
   {{super()}}
+  <div class="container">
   <h1>Administrator dashboard</h1>
   <h3>Articoli</h3>
   <h3>Visite: {{visits}}</h3>
@@ -33,13 +34,13 @@
     </tr>
     {% for a in articles %}
       <tr class="table-light">
-        <td>{{a[0]}}</td>
-        <td>{{a[1]}}</td>
-        <td>{{a[2]}}</td>
+        <td>{{a.titolo}}</td>
+        <td>{{a.data_pubblicazione}}</td>
+        <td>{{a.categoria}}</td>
         <td>
           <div class="btn-group" role="group">
-            <a href="/admin/delete-article/{{a[0]}}"><button class="btn btn-dark">Cancella</button></a>
-            <a href="/admin/edit-article/{{a[0]}}"><button class="btn btn-dark">Modifica</button></a>
+            <a href="/admin/delete-article/{{a.titolo}}"><button class="btn btn-dark">Cancella</button></a>
+            <a href="/admin/edit-article/{{a.titolo}}"><button class="btn btn-secondary">Modifica</button></a>
           </div>
         </td>
       </tr>
@@ -55,13 +56,13 @@
     </tr>
     {% for g in games %}
       <tr class="table-light">
-        <td>{{g[0]}}</td>
-        <td>{{g[1]}}</td>
-        <td>{{g[2]}}</td>
+        <td>{{g.titolo}}</td>
+        <td>{{g.descrizione}}</td>
+        <td>{{g.downloads}}</td>
         <td>
           <div class="btn-group" role="group">
-            <a href="/admin/delete-game/{{g[0]}}"><button class="btn btn-dark">Cancella</button></a>
-            <a href="/admin/edit-game/{{g[0]}}"><button class="btn btn-dark">Modifica</button></a>
+            <a href="/admin/delete-game/{{g.titolo}}"><button class="btn btn-dark">Cancella</button></a>
+            <a href="/admin/edit-game/{{g.titolo}}"><button class="btn btn-secondary">Modifica</button></a>
           </div>
         </td>
       </tr>
@@ -70,4 +71,5 @@
   <a id="button" href="{{url_for('admin.add_article')}}"><button class="btn btn-dark">Aggiungi articolo</button></a>
   <a id="button" href="{{url_for('admin.add_game')}}"><button class="btn btn-dark">Aggiungi gioco</button></a>
   <a id="button" href="{{url_for('admin.add_admin')}}"><button class="btn btn-dark">Aggiungi utente admin</button></a>
+</div>
 {% endblock %}
