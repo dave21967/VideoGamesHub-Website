@@ -1,4 +1,4 @@
-from flask import render_template, request, redirect, url_for, session
+from flask import render_template, request, redirect, url_for, session, send_file
 from smtplib import SMTP
 import sqlite3
 from datetime import *
@@ -114,13 +114,21 @@ def articles(page):
 
 @app.route("/articles/view/<title>")
 def view_article(title):
-    arts = Articolo.query.filter_by(titolo=title).first()
+    arts = Articolo.query.filter_by(slug=title).first()
     arts.visualizzazioni += 1
     db.session.commit()
     if "username" in session:
         return render_template("article.html", article=arts, name=session["username"])
     else:
         return render_template("article.html", article=arts)
+
+@app.route("/download-app")
+def download_app():
+    return render_template("download_app.html")
+
+@app.route("/download-app/download")
+def download():
+    return send_file("static/uploads/sfondo1.jpg", as_attachment=True)
 
 if __name__ == '__main__':
     db.create_all()

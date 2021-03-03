@@ -11,15 +11,15 @@ files = Blueprint("files", __name__, template_folder="templates", static_folder=
 @files.route("/")
 def index():
     if "username" in session:
-        return render_template("list_files.html", files=os.listdir("static/uploads/images"), name=session["username"])
+        return render_template("admin/list_files.html", files=os.listdir("static/uploads/images"), name=session["username"])
     else:
         return redirect(url_for('admin.index'))
 
 @files.route("/upload", methods=["GET", "POST"])
 def upload():
-    immagine = request.files["image"]
-    filename = request.form["image-name"]
-    immagine.save(os.path.join("static/uploads/images/", filename))
+    immagini = request.files.getlist("images[]")
+    for image in immagini:
+        image.save(os.path.join("static/uploads/images/",image.filename))
     return redirect(url_for('files.index'))
 
 @files.route("/delete/<filename>")

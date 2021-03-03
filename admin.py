@@ -19,12 +19,12 @@ def index():
             session['permissions'] = 1
             return redirect(url_for('admin.dashboard'))
         else:
-            return render_template("admin_login.html", error=f"Errore: Nessun utente registrato come {username}")
+            return render_template("admin/admin_login.html", error=f"Errore: Nessun utente registrato come {username}")
     else:
         if "username" in session and session["permissions"] == 1:
             return redirect(url_for("admin.dashboard"))
         else:
-            return render_template("admin_login.html")
+            return render_template("admin/admin_login.html")
 
 
 @admin.route("/dashboard")
@@ -33,7 +33,7 @@ def dashboard():
         result = Utente.query.filter_by(admin_permissions=0).all()
         arts = Articolo.query.all()
         giochi = Gioco.query.all()
-        return render_template("admin.html", visits=current_app.config['VISITS'], data=result, articles=arts, games=giochi, name=session["username"])
+        return render_template("admin/admin.html", visits=current_app.config['VISITS'], data=result, articles=arts, games=giochi, name=session["username"])
     else:
         return redirect(url_for("admin.index"))
 
@@ -62,7 +62,7 @@ def add_article():
     else:
         if "username" in session:
             
-            return render_template("add_article.html")
+            return render_template("admin/add_article.html")
         else:
             return redirect(url_for('login'))
 
@@ -80,7 +80,7 @@ def edit_article(title):
             return redirect(url_for("admin.dashboard"))
         else:
             art=Articolo.query.filter_by(titolo=title).first()
-            return render_template("edit_article.html", title=art.titolo, content=art.contenuto, preview=art.anteprima, cathegory=art.categoria)
+            return render_template("admin/edit_article.html", title=art.titolo, content=art.contenuto, preview=art.anteprima, cathegory=art.categoria)
     else:
         return redirect(url_for("admin.index"))
 
@@ -96,7 +96,7 @@ def edit_game(title):
             return redirect(url_for("admin.dashboard"))
         else:
             gioco = Gioco.query.filter_by(titolo=title).first()
-            return render_template("edit_game.html", game=gioco)
+            return render_template("admin/edit_game.html", game=gioco)
     else:
         return redirect(url_for("admin.index"))
 
@@ -127,7 +127,7 @@ def add_game():
             except Exception as e:
                 return f"Errore: {e}"
         else:
-            return render_template("add_game.html")
+            return render_template("admin/add_game.html")
     else:
         return redirect(url_for("login"))
 
@@ -155,8 +155,8 @@ def add_admin():
                 db.session.commit()
                 return redirect(url_for("admin.dashboard"))
             except Exception as e:
-                return render_template("add_admin.html", error=f"Errore nel salvataggio: {str(e)}")
+                return render_template("admin/add_admin.html", error=f"Errore nel salvataggio: {str(e)}")
         else:
-            return  render_template("add_admin.html", name=session["username"])
+            return  render_template("admin/add_admin.html", name=session["username"])
     else:
         return redirect(url_for('admin.login'))

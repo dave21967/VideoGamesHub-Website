@@ -1,13 +1,14 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from datetime import *
+from slugify import slugify
 
 app = Flask(__name__, template_folder='templates', static_folder='static')
 app.secret_key = 'hello world!'
 
 app.config['UPLOADS'] = 'static/uploads/'
 app.config['GAMES-UPLOADS'] = "static/uploads/games/"
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///videogameshub.db"
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///test.db"
 app.config['VISITS'] = 0
 app.config['HOSTS'] = []
 
@@ -22,6 +23,7 @@ class Articolo(db.Model):
     data_pubblicazione = db.Column("data_pubblicazione", db.Date)
     visualizzazioni = db.Column("visualizzazioni", db.Integer)
     anteprima = db.Column("anteprima_testo", db.Text)
+    slug = db.Column("slug", db.String(40), unique=True)
     def __init__(self, titolo, contenuto, categoria, immagine, anteprima):
         self.titolo = titolo
         self.contenuto = contenuto
@@ -30,6 +32,7 @@ class Articolo(db.Model):
         self.anteprima = anteprima
         self.data_pubblicazione = datetime.today()
         self.visualizzazioni = 0
+        self.slug = slugify(self.titolo)
 
 class Gioco(db.Model):
     __tablename__ = "giochi"
