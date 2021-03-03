@@ -62,8 +62,7 @@
         </div>
         <div class="modal-body">
           <form method="POST" action="/files/upload" enctype="multipart/form-data">
-              <input type="text" class="form-control" name="image-name" placeholder="Nome file"><br>
-              <input type="file" class="form-control" accept="images/*" name="image"><br>
+              <input type="file" class="form-control" multiple="true" accept="images/*" name="images[]"><br>
               <input type="submit" class="btn btn-dark" value="Upload">
               <input type="button" class="btn btn-secondary" value="Annulla" data-bs-dismiss="modal">
           </form>

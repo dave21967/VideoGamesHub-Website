@@ -62,7 +62,7 @@
               <img class="article-img" src="{{url_for('static', filename='uploads/'+row.immagini)}}">
             </div>
             <div id="details" class="col-sm">
-              <a style="color: black;" href="/articles/view/{{row.titolo}}"><h2 style="font-family: Hack;" >{{row.titolo}}</h2></a>
+              <a style="color: black;" href="/articles/view/{{row.slug}}"><h2 style="font-family: Hack;" >{{row.titolo}}</h2></a>
               {{row.anteprima|safe}}
               <p id="label">Categoria: <span style="font-family: Hack;">{{row.categoria}} | </span>
               <span id="label">Data pubblicazione: <span style="font-family: Hack;">{{row.data_pubblicazione}} | </span></span>
