@@ -61,3 +61,17 @@ class Utente(db.Model):
         self.email = email
         self.newsletter = 1
         self.admin_permissions = admin_permissions
+
+class Commento(db.Model):
+    __tablename__ = "commenti"
+    id = db.Column("id", db.Integer, primary_key=True)
+    testo = db.Column("testo", db.Text)
+    user = db.relationship("Utente", backref="utenti", lazy=True)
+    title = db.relationship("Articolo", backref="articoli", lazy=True)
+    username = db.Column("utente", db.String(16), db.ForeignKey("utenti.username"))
+    titolo_articolo = db.Column("articolo", db.String(255), db.ForeignKey("articoli.titolo"))
+
+    def __init__(self, testo, username, articolo):
+        self.testo = testo
+        self.username = username
+        self.titolo_articolo = articolo

@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, session, redirect, url_for, current_app, request
+from flask import Blueprint, render_template, session, redirect, url_for, current_app, request, make_response
 import sqlite3
 import uuid
 from smtplib import SMTP
@@ -15,13 +15,15 @@ def index():
         password = request.form['password']
         admins = Utente.query.filter_by(username=username, password=password, admin_permissions=1).all()
         if len(admins) > 0:
-            session['username'] = username
-            session['permissions'] = 1
-            return redirect(url_for('admin.dashboard'))
+            session["username"] = username
+            resp = make_response(redirect(url_for('admin.dashboard')))
+            resp.set_cookie("username", username, max_age=60*60*24)
+            resp.set_cookie("permissions", "1", max_age=60*60*24)
+            return resp
         else:
             return render_template("admin/admin_login.html", error=f"Errore: Nessun utente registrato come {username}")
     else:
-        if "username" in session and session["permissions"] == 1:
+        if request.cookies.get("username") and request.cookies.get("permissions") == 1:
             return redirect(url_for("admin.dashboard"))
         else:
             return render_template("admin/admin_login.html")
@@ -29,11 +31,11 @@ def index():
 
 @admin.route("/dashboard")
 def dashboard():
-    if 'username' in session:
+    if request.cookies.get("username"):
         result = Utente.query.filter_by(admin_permissions=0).all()
         arts = Articolo.query.all()
         giochi = Gioco.query.all()
-        return render_template("admin/admin.html", visits=current_app.config['VISITS'], data=result, articles=arts, games=giochi, name=session["username"])
+        return render_template("admin/admin.html", visits=current_app.config['VISITS'], data=result, articles=arts, games=giochi, name=request.cookies.get("username"))
     else:
         return redirect(url_for("admin.index"))
 
@@ -60,7 +62,7 @@ def add_article():
         except Exception as e:
             return f"Errore: {e}"
     else:
-        if "username" in session:
+        if request.cookies.get("username"):
             
             return render_template("admin/add_article.html")
         else:
@@ -68,7 +70,7 @@ def add_article():
 
 @admin.route("/edit-article/<title>", methods=["GET", "POST"])
 def edit_article(title):
-    if "username" in session:
+    if request.cookies.get("username"):
         if request.method == "POST":
             art = Articolo(request.form["titolo"], request.form["contenuto"], request.form["categoria"], "", request.form["anteprima"])
             art = Articolo.query.filter_by(titolo=title).first()
@@ -86,7 +88,7 @@ def edit_article(title):
 
 @admin.route("/edit-game/<title>", methods=["GET", "POST"])
 def edit_game(title):
-    if "username" in session:
+    if request.cookies.get("username"):
         if request.method == "POST":
             gioco = Gioco(request.form["titolo"], request.form["descrizione"], "", "")
             game = Gioco.query.filter_by(titolo_gioco=title).first()
@@ -113,7 +115,7 @@ def delete_article(title):
 
 @admin.route("/add-game", methods=["GET", "POST"])
 def add_game():
-    if "username" in session:
+    if request.cookies.get("username"):
         if request.method == "POST":
             title = request.form["titolo"]
             descr = request.form["descrizione"]
@@ -133,7 +135,7 @@ def add_game():
 
 @admin.route("/delete-game/<title>")
 def delete_game(title):
-    if "username" in session:
+    if request.cookies.get("username"):
         g=Gioco.query.filter_by(titolo=title).first()
         Gioco.query.filter(Gioco.titolo==title).delete()
         os.remove(os.path.join(current_app.config["GAMES-UPLOADS"], g.nome_file))
@@ -144,7 +146,7 @@ def delete_game(title):
 
 @admin.route("/add-admin-user", methods=["GET", "POST"])
 def add_admin():
-    if "username" in session:
+    if request.cookies.get("username"):
         if request.method == "POST":
             try:
                 username = request.form["username"]
@@ -157,6 +159,6 @@ def add_admin():
             except Exception as e:
                 return render_template("admin/add_admin.html", error=f"Errore nel salvataggio: {str(e)}")
         else:
-            return  render_template("admin/add_admin.html", name=session["username"])
+            return  render_template("admin/add_admin.html", name=request.cookies.get("username"))
     else:
         return redirect(url_for('admin.login'))
