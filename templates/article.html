@@ -2,6 +2,24 @@
 {% block head %}
   {{super()}}
   <title>{% block title %}{{article.titolo}}{% endblock %}</title>
+  <style>
+    #textarea {
+      width: 30%;
+    }
+    .card {
+      position: relative;
+      left: 40%;
+    }
+    @media only screen and (max-width: 600px) {
+      #textarea {
+        width: 100%;
+      }
+      .card {
+        position: relative;
+        left: 5%;
+      }
+    }
+  </style>
 {% endblock %}
 {% block menu %}
   {{super()}}
@@ -22,5 +40,24 @@
 {% block content %}
   {{super()}}
   <h1>{{article.titolo}}</h1>
-  {{article.contenuto | safe}}
+  {{article.contenuto | safe}}<br>
+  {% if session %}
+    <div id="textarea" class="container">
+      <form method="POST">
+        <input type="text" value="{{session['username']}}" name="user" hidden>
+        <input type="text" value="{{article.titolo}}" name="articolo" hidden>
+        <textarea class="form-control" placeholder="Commenta" name="testo" rows="6"></textarea><br>
+        <input class="btn btn-dark" type="submit" value="Commenta">
+      </form>
+    </div>
+  {% endif %}
+  <h3 class="text-center">Commenti</h3>
+  {% for commento in commenti %}
+    <div class="card" style="width: 18rem;">
+      <div class="card-body">
+        <h5 class="card-title">{{commento.user.username}}</h5>
+        <p class="card-text">{{commento.testo}}</p>
+      </div>
+    </div>
+  {% endfor %}
 {% endblock %}
