@@ -8,7 +8,7 @@ app.secret_key = 'hello world!'
 
 app.config['UPLOADS'] = 'static/uploads/'
 app.config['GAMES-UPLOADS'] = "static/uploads/games/"
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///test.db"
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///videogameshub.db"
 app.config['VISITS'] = 0
 app.config['HOSTS'] = []
 
