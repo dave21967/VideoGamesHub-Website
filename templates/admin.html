@@ -7,6 +7,12 @@
       position: relative;
       left: 29%;
     }
+    #delete-icon {
+      width: 30px;
+    }
+    #edit-icon {
+      width: 20px;
+    }
     @media only screen and (max-width: 600px) {
       #button {
         position: relative;
@@ -39,8 +45,8 @@
         <td>{{a.categoria}}</td>
         <td>
           <div class="btn-group" role="group">
-            <a href="/admin/delete-article/{{a.titolo}}"><button class="btn btn-dark">Cancella</button></a>
-            <a href="/admin/edit-article/{{a.titolo}}"><button class="btn btn-secondary">Modifica</button></a>
+            <a href="/admin/delete-article/{{a.titolo}}"><img id="delete-icon" src="{{url_for('static', filename='images/icons/delete_icon.png')}}"></a>
+            <a href="/admin/edit-article/{{a.titolo}}"><img id="edit-icon" src="{{url_for('static', filename='images/icons/edit_icon.png')}}"></a>
           </div>
         </td>
       </tr>
@@ -61,8 +67,8 @@
         <td>{{g.downloads}}</td>
         <td>
           <div class="btn-group" role="group">
-            <a href="/admin/delete-game/{{g.titolo}}"><button class="btn btn-dark">Cancella</button></a>
-            <a href="/admin/edit-game/{{g.titolo}}"><button class="btn btn-secondary">Modifica</button></a>
+            <a href="/admin/delete-game/{{g.titolo}}"><img id="delete-icon" src="{{url_for('static', filename='images/icons/delete_icon.png')}}"></a>
+            <a href="/admin/edit-game/{{g.titolo}}"><img id="edit-icon" src="{{url_for('static', filename='images/icons/edit_icon.png')}}"></a>
           </div>
         </td>
       </tr>

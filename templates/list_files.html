@@ -6,6 +6,7 @@
         #uploadBtn {
             position: relative;
             left: 80%;
+            width: 50px;
         }
         #image {
             width: 300px;
@@ -29,6 +30,7 @@
             #uploadBtn {
               position: relative;
               left: 30%;
+              width: 40px;
             }
         }
     </style>
@@ -48,7 +50,7 @@
     {% endif %}
     </div>
     <!-- Button trigger modal -->
-<button type="button" id="uploadBtn" class="btn btn-outline-dark" data-bs-toggle="modal" data-bs-target="#exampleModal">
+<img src="{{url_for('static', filename='images/icons/add_icon.png')}}" id="uploadBtn" data-bs-toggle="modal" data-bs-target="#exampleModal">
     Carica nuovo file
 </button>
   

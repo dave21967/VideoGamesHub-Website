@@ -2,6 +2,11 @@
 {% block head %}
   {{super()}}
   <title>{% block title %}Giochi{% endblock %}</title>
+  <style>
+    #download-icon {
+      width: 35px;
+    }
+  </style>
 {% endblock %}
 {% block menu %}
   {{super()}}
@@ -36,7 +41,7 @@
           <td>{{f.titolo}}</td>
           <td>{{f.descrizione|safe}}</td>
           <td>{{f.downloads}}</td>
-          <td><a style="color: blue;" href="/games/?filename={{f.nome_file}}"><button class="btn btn-dark">Download</button></a></td>
+          <td><a style="color: blue;" href="/games/?filename={{f.nome_file}}"><img id="download-icon" src="{{url_for('static', filename='images/icons/download_icon.png')}}"></a></td>
         </tr>
       {%endfor%}
     </table>
