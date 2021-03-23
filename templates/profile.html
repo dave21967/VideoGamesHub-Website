@@ -7,7 +7,7 @@
     {{super()}}
     {% block dropdown_content %}
       <ul class="dropdown-menu">
-        {% if session %}
+        {% if name != "" %}
           <li><a class="dropdown-item" href="/user/{{name}}/myProfile">{{name}}</a></li>
           <li><a class="dropdown-item" href="{{url_for('logout')}}">Esci</a></li>
           <li><a class="dropdown-item" href="{{url_for('admin.index')}}">Pannello di controllo</a></li>
@@ -24,4 +24,8 @@
 {% block content %}
   {{super()}}
   <h1>Mio Profilo - {{username}}</h1>
+  <h2>Post salvati</h2>
+  {% for p in posts %}
+      <a href="/articles/view/{{p.articolo}}"><h5>{{p.articolo}}</h5></a>
+  {% endfor %}
 {% endblock %}

@@ -79,7 +79,7 @@
             </div>
             <div id="details" class="col-sm">
               <a style="color: black;" href="/articles/view/{{row.slug}}"><h2 style="font-family: Hack;" >{{row.titolo}}</h2></a>
-              {{row.anteprima|safe}}
+              {{row.contenuto|truncate(20)|safe}}
               <p id="label">Categoria: {{row.categoria}}<br>
               <img id="date-icon" src="{{url_for('static', filename='images/icons/date_icon.png')}}"> {{row.data_pubblicazione}}<br>
               <img id="icon" src="{{url_for('static', filename='images/icons/views_icon.png')}}"> {{row.visualizzazioni}}</p>
