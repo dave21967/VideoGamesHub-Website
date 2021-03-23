@@ -12,6 +12,11 @@ app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///videogameshub.db"
 app.config['VISITS'] = 0
 app.config['HOSTS'] = []
 
+def generate_slug(string):
+    string.lower()
+    slug=string.replace(" ", "-")
+    return slug
+
 db = SQLAlchemy(app)
 
 class Articolo(db.Model):
@@ -24,6 +29,7 @@ class Articolo(db.Model):
     visualizzazioni = db.Column("visualizzazioni", db.Integer)
     anteprima = db.Column("anteprima_testo", db.Text)
     slug = db.Column("slug", db.String(40), unique=True)
+    post_rel = db.Column("post", db.String(100), db.ForeignKey("post_salvati.post"))
     def __init__(self, titolo, contenuto, categoria, immagine, anteprima):
         self.titolo = titolo
         self.contenuto = contenuto
@@ -32,7 +38,7 @@ class Articolo(db.Model):
         self.anteprima = anteprima
         self.data_pubblicazione = datetime.today()
         self.visualizzazioni = 0
-        self.slug = slugify(self.titolo)
+        self.slug = generate_slug(self.titolo)
 
 class Gioco(db.Model):
     __tablename__ = "giochi"
@@ -55,6 +61,7 @@ class Utente(db.Model):
     password = db.Column("password", db.String(100))
     newsletter = db.Column("newsletter", db.Boolean)
     admin_permissions = db.Column("permessi_admin", db.Boolean)
+    user_rel = db.Column("user", db.String(255), db.ForeignKey("post_salvati.user"))
     def __init__(self, username, email, password, admin_permissions):
         self.username = username
         self.password = password
@@ -63,7 +70,6 @@ class Utente(db.Model):
         self.admin_permissions = admin_permissions
 
 class Commento(db.Model):
-    __tablename__ = "commenti"
     id = db.Column("id", db.Integer, primary_key=True)
     testo = db.Column("testo", db.Text)
     user = db.relationship("Utente", backref="utenti", lazy=True)
@@ -75,3 +81,11 @@ class Commento(db.Model):
         self.testo = testo
         self.username = username
         self.titolo_articolo = articolo
+
+class PostSalvato(db.Model):
+    __tablename__ = "post_salvati"
+    id = db.Column("id", db.Integer, primary_key=True)
+    utente = db.Column("user", db.String(16))
+    articolo = db.Column("post", db.String(255))
+    art_rel = db.relationship("Articolo", backref='articles')
+    user_rel = db.relationship("Utente", backref='users')

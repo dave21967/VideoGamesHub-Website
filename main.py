@@ -104,6 +104,21 @@ def signup():
     else:
         return render_template("signup.html", error="")
 
+@app.route("/check-users")
+def check_users():
+    username=request.args["username"]
+    email=request.args["email"]
+    password=request.args["password"]
+    usr=Utente.query.filter_by(username=username, email=email,password=password).first()
+    if usr is not None:
+        print("Già esistente!")
+        resp = make_response("Già esistente")
+        return resp
+    else:
+        resp = make_response("Ok")
+        print(resp)
+        return resp
+
 @app.route("/articles/<page>", methods=["GET", "POST"])
 def articles(page):
     if request.args.get("titolo"):
@@ -115,6 +130,13 @@ def articles(page):
         return render_template("user.html", data=result, name=request.cookies.get("username"))
     else:
         return render_template("user.html", data=result, name="")
+
+@app.route("/articles")
+def search_article():
+    titolo = request.args["titolo"]
+    result = Articolo.query.filter(Articolo.titolo.like(f"%{titolo}%")).first()
+    if result:
+        return make_response(result.slug)
 
 @app.route("/articles/view/<title>", methods=["GET", "POST"])
 def view_article(title):
