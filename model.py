@@ -89,3 +89,10 @@ class PostSalvato(db.Model):
     articolo = db.Column("post", db.String(255))
     art_rel = db.relationship("Articolo", backref='articles')
     user_rel = db.relationship("Utente", backref='users')
+
+class Punteggio(db.Model):
+    __tablename__ = "punteggi"
+    id = db.Column("id", db.Integer, primary_key=True)
+    nome_utente = db.Column("nome_utente", db.String(20))
+    titolo_gioco = db.Column("titolo_gioco", db.String(255))
+    punteggio = db.Column("punteggio", db.Integer)

@@ -6,7 +6,7 @@ from admin import admin
 from videogames import games
 from files import files
 from user import user
-from model import Utente, db, app, Articolo, Commento
+from model import Utente, db, app, Articolo, Commento, PostSalvato
 import os
 
 app.register_blueprint(admin, url_prefix="/admin")
@@ -127,9 +127,9 @@ def articles(page):
     else:
         result = Articolo.query.order_by(Articolo.data_pubblicazione.desc()).paginate(int(page), per_page=5)
     if request.cookies.get("username"):
-        return render_template("user.html", data=result, name=request.cookies.get("username"))
+        return render_template("blog-feed.html", data=result, name=request.cookies.get("username"))
     else:
-        return render_template("user.html", data=result, name="")
+        return render_template("blog-feed.html", data=result, name="")
 
 @app.route("/articles")
 def search_article():
@@ -157,7 +157,13 @@ def view_article(title):
         comments = Commento.query.filter_by(titolo_articolo=arts.titolo).all()
         db.session.commit()
         if request.cookies.get("username"):
-            return render_template("article.html", article=arts, name=request.cookies.get("username"), commenti=comments)
+            saved = "false"
+            art = PostSalvato.query.filter_by(articolo=title, utente=session['username']).first()
+            if art != None:
+                saved = "true"
+            else:
+                saved = "false"
+            return render_template("article.html", article=arts, saved=saved, name=request.cookies.get("username"), commenti=comments)
         else:
             return render_template("article.html", article=arts, commenti=comments)
 
