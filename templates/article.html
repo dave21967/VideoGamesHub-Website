@@ -41,7 +41,13 @@
   {{super()}}
   <h1>{{article.titolo}}</h1>
   {{article.contenuto | safe}}<br>
-  <a href="/user/{{session['username']}}/save-post/{{article.slug}}"><button class="btn btn-dark">Salva</button></a>
+  {% if session %}
+    {% if saved == "false" %}
+      <a href="/user/{{session['username']}}/save-post/{{article.slug}}"><button class="btn btn-dark">Salva</button></a>
+    {% else %}
+      <a href="/user/{{session['username']}}/unsave-post/{{article.slug}}"><button class="btn btn-success">Salvato</button></a>
+    {% endif %}
+  {% endif %}
   {% if session %}
     <div id="textarea" class="container">
       <form method="POST">
