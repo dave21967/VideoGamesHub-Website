@@ -7,6 +7,7 @@ from videogames import games
 from files import files
 from user import user
 from model import Utente, db, app, Articolo, Commento, PostSalvato
+from crypt import encrypt_password, check_password
 import os
 
 app.register_blueprint(admin, url_prefix="/admin")
@@ -57,8 +58,9 @@ def login():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        users = Utente.query.filter_by(username=username, password=password).all()
-        if len(users) > 0:
+
+        users = Utente.query.filter_by(username=username).first()
+        if users and check_password(password, users.password):
             session["username"] = username
             resp=make_response(redirect(url_for('index')))
             resp.set_cookie("username", username, max_age=60*60*24)
@@ -88,7 +90,7 @@ def signup():
             return render_template("signup.html", error="Tutti i campi sono obbligatori")
         else:
             try:
-                usr = Utente(username, email, password, 0)
+                usr = Utente(username, email, encrypt_password(password), 0)
                 db.session.add(usr)
                 db.session.commit()
                 mail = SMTP("smtp.gmail.com", 587)
@@ -109,7 +111,7 @@ def check_users():
     username=request.args["username"]
     email=request.args["email"]
     password=request.args["password"]
-    usr=Utente.query.filter_by(username=username, email=email,password=password).first()
+    usr=Utente.query.filter_by(username=username, email=email).first()
     if usr is not None:
         print("Già esistente!")
         resp = make_response("Già esistente")

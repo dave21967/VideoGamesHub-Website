@@ -1,14 +1,14 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from datetime import *
-from slugify import slugify
+from crypt import *
 
 app = Flask(__name__, template_folder='templates', static_folder='static')
 app.secret_key = 'hello world!'
 
 app.config['UPLOADS'] = 'static/uploads/'
 app.config['GAMES-UPLOADS'] = "static/uploads/games/"
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///videogameshub.db"
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///test.db"
 app.config['VISITS'] = 0
 app.config['HOSTS'] = []
 

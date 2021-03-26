@@ -5,6 +5,7 @@ from smtplib import SMTP
 from model import Articolo, Utente, Gioco, db
 import os
 from datetime import datetime
+from crypt import encrypt_password, check_password
 
 admin = Blueprint("admin", __name__, template_folder="templates", static_folder="static")
 
@@ -13,8 +14,8 @@ def index():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        admins = Utente.query.filter_by(username=username, password=password, admin_permissions=1).all()
-        if len(admins) > 0:
+        admins = Utente.query.filter_by(username=username, admin_permissions=1).first()
+        if admins and check_password(password, admins.password):
             session["username"] = username
             resp = make_response(redirect(url_for('admin.dashboard')))
             resp.set_cookie("username", username, max_age=60*60*24)
@@ -152,7 +153,7 @@ def add_admin():
                 username = request.form["username"]
                 email = request.form["email"]
                 password = request.form["password"]
-                usr = Utente(username, email, password, 1)
+                usr = Utente(username, email, encrypt_password(password), 1)
                 db.session.add(usr)
                 db.session.commit()
                 return redirect(url_for("admin.dashboard"))
