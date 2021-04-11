@@ -2,13 +2,15 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from datetime import *
 from crypt import *
+from flask_migrate import Migrate, MigrateCommand
+from flask_script import Manager
 
 app = Flask(__name__, template_folder='templates', static_folder='static')
 app.secret_key = 'hello world!'
 
 app.config['UPLOADS'] = 'static/uploads/'
 app.config['GAMES-UPLOADS'] = "static/uploads/games/"
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///test.db"
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///videogameshub.db"
 app.config['VISITS'] = 0
 app.config['HOSTS'] = []
 
@@ -18,6 +20,9 @@ def generate_slug(string):
     return slug
 
 db = SQLAlchemy(app)
+migrate = Migrate(app, db)
+manager = Manager(app)
+manager.add_command('db', MigrateCommand)
 
 class Articolo(db.Model):
     __tablename__ = "articoli"
@@ -96,3 +101,7 @@ class Punteggio(db.Model):
     nome_utente = db.Column("nome_utente", db.String(20))
     titolo_gioco = db.Column("titolo_gioco", db.String(255))
     punteggio = db.Column("punteggio", db.Integer)
+
+
+if __name__ == '__main__':
+    manager.run()

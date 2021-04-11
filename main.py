@@ -17,9 +17,6 @@ app.register_blueprint(files, url_prefix="/files")
 
 @app.route("/", methods=["GET", "POST"])
 def index():
-    if request.host not in app.config['HOSTS']:
-        app.config['HOSTS'].append(request.host)
-        app.config['VISITS'] += 1
     if request.method == "POST":
         question = request.form.get("question")
         mail = SMTP("smtp.gmail.com", 587)
@@ -34,6 +31,13 @@ def index():
             return render_template("index.html", name=request.cookies.get("username"))
         else:
             return render_template("index.html")
+
+@app.before_request
+def after_request_func():
+    if request.remote_addr not in app.config['HOSTS']:
+        print(request.remote_addr)
+        app.config['HOSTS'].append(request.remote_addr)
+        app.config['VISITS'] += 1
 
 @app.route("/contacts", methods=["GET", "POST"])
 def contacts():
@@ -176,6 +180,10 @@ def download_app():
 @app.route("/download-app/download")
 def download():
     return send_file("static/uploads/sfondo1.jpg", as_attachment=True)
+
+@app.route("/privacy-policy/")
+def privacy():
+    return "Questa è la sezione dedicata al GDPR"
 
 if __name__ == '__main__':
     db.create_all()
