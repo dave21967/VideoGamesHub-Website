@@ -6,7 +6,7 @@ from admin import admin
 from videogames import games
 from files import files
 from user import user
-from model import Utente, db, app, Articolo, Commento, PostSalvato
+from model import Utente, db, app, Articolo, Commento, PostSalvato, Segnalazione
 from crypt import encrypt_password, check_password
 import os
 
@@ -19,12 +19,9 @@ app.register_blueprint(files, url_prefix="/files")
 def index():
     if request.method == "POST":
         question = request.form.get("question")
-        mail = SMTP("smtp.gmail.com", 587)
-        mail.ehlo()
-        mail.starttls()
-        mail.login("videogameshub01@gmail.com", "Xcloseconnect68")
-        mail.sendmail("videogameshub01@gmail.com", "davide.costantini2001@gmail.com", "Subject: Nuova domanda\n\nUn utente ha posto la seguente domanda\n"+question+"")
-        mail.quit()
+        s=Segnalazione('',question)
+        db.session.add(s)
+        db.session.commit()
         return render_template("index.html")
     else:
         if request.cookies.get("username"):
@@ -43,13 +40,6 @@ def after_request_func():
 def contacts():
     if request.method == "POST":
         if request.method == "POST":
-            problem = request.form.get("problem")
-            mail = SMTP("smtp.gmail.com", 587)
-            mail.ehlo()
-            mail.starttls()
-            mail.login("videogameshub01@gmail.com", "Xcloseconnect68")
-            mail.sendmail("videogameshub01@gmail.com", "davide.costantini2001@gmail.com", "Subject: E' stato segnalato un problema\n\nUn utente ha segnalato un problema\n"+problem+"")
-            mail.quit()
             return render_template("contacts.html", name=request.cookies.get("username"))
     else:
         if "username" in session:

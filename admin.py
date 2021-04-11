@@ -2,7 +2,7 @@ from flask import Blueprint, render_template, session, redirect, url_for, curren
 import sqlite3
 import uuid
 from smtplib import SMTP
-from model import Articolo, Utente, Gioco, db
+from model import Articolo, Utente, Gioco, Segnalazione, db
 import os
 from datetime import datetime
 from crypt import encrypt_password, check_password
@@ -24,7 +24,7 @@ def index():
         else:
             return render_template("admin/admin_login.html", error=f"Errore: Nessun utente registrato come {username}")
     else:
-        if request.cookies.get("username") and request.cookies.get("permissions") == 1:
+        if request.cookies.get("username") and request.cookies.get("permissions") == '1':
             return redirect(url_for("admin.dashboard"))
         else:
             return render_template("admin/admin_login.html")
@@ -32,11 +32,12 @@ def index():
 
 @admin.route("/dashboard")
 def dashboard():
-    if request.cookies.get("username"):
+    if request.cookies.get("username") and request.cookies.get('permissions') == '1':
         result = Utente.query.filter_by(admin_permissions=0).all()
         arts = Articolo.query.all()
         giochi = Gioco.query.all()
-        return render_template("admin/admin.html", visits=current_app.config['VISITS'], data=result, articles=arts, games=giochi, name=request.cookies.get("username"))
+        segn = Segnalazione.query.all()
+        return render_template("admin/admin.html", visits=current_app.config['VISITS'], data=result, articles=arts, games=giochi, name=request.cookies.get("username"), segnalazioni=segn)
     else:
         return redirect(url_for("admin.index"))
 

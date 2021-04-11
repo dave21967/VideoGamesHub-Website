@@ -10,7 +10,7 @@ app.secret_key = 'hello world!'
 
 app.config['UPLOADS'] = 'static/uploads/'
 app.config['GAMES-UPLOADS'] = "static/uploads/games/"
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///videogameshub.db"
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///test.db"
 app.config['VISITS'] = 0
 app.config['HOSTS'] = []
 
@@ -101,6 +101,16 @@ class Punteggio(db.Model):
     nome_utente = db.Column("nome_utente", db.String(20))
     titolo_gioco = db.Column("titolo_gioco", db.String(255))
     punteggio = db.Column("punteggio", db.Integer)
+
+class Segnalazione(db.Model):
+    __tablename__ = 'segnalazioni'
+    id = db.Column('id', db.Integer, primary_key=True)
+    nome_utente = db.Column("nome_utente", db.String(20))
+    testo = db.Column('testo', db.String(255))
+
+    def __init__(self, usr, txt):
+        self.nome_utente = usr
+        self.testo = txt
 
 
 if __name__ == '__main__':
