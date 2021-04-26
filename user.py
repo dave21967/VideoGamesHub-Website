@@ -4,7 +4,6 @@ from smtplib import SMTP
 from datetime import *
 from admin import admin
 from videogames import games
-from slugify import slugify
 from model import Articolo, PostSalvato, Gioco, Punteggio, db
 
 user = Blueprint("user", __name__, static_folder="static", template_folder="templates")
@@ -64,3 +63,17 @@ def delete_score(usr):
         Punteggio.query.filter_by(nome_utente=usr).delete()
         db.session.commit()
         return redirect(url_for('user.profile', usr=usr))
+
+@user.route("set-theme/")
+def set_theme():
+    if 'theme' in request.args:
+        resp = make_response()
+        resp.set_cookie("theme", request.args['theme'], max_age=60*60*24)
+        return resp
+
+@user.route("get_cookie/<cookie>")
+def get_cookie(cookie):
+    if cookie in request.cookies:
+        return request.cookies[cookie]
+    else:
+        return "Nessun cookie "+cookie
