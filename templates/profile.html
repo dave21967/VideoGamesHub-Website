@@ -57,12 +57,4 @@
       </div>
     </div>
   </div>
-  <div class="form-check form-switch">
-    {% if 'theme' in request.cookies and request.cookies['theme'] == 'dark'%}
-      <input class="form-check-input" onchange="setTheme(this.checked);" checked="true" type="checkbox" id="switch">
-    {% else %}
-      <input class="form-check-input" onchange="setTheme(this.checked);" type="checkbox" id="switch">
-    {% endif %}
-    <label class="form-check-label" for="flexSwitchCheckDefault">Tema scuro</label>
-  </div>
 {% endblock %}

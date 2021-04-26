@@ -60,7 +60,14 @@
                   <li><a class="nav-link" href="{{url_for('admin.dashboard')}}">Pannello di controllo</a></li>
                   <li><a class="nav-link active" href="{{url_for('files.index')}}">Visualizza file caricati</a></li>
                 {% endif %}
-              {% endblock %}
+                {% if 'theme' in request.cookies and request.cookies.get('theme') == 'light' %}
+                  <li><a class="nav-link" href="/user/set-theme/?theme=dark">Tema scuro</a></li>
+                {% elif 'theme' in request.cookies and request.cookies.get('theme') == 'dark' %}
+                  <li><a class="nav-link" href="/user/set-theme/?theme=light">Tema chiaro</a></li>
+                {% else %}
+                  <li><a class="nav-link" href="/user/set-theme/?theme=dark">Tema scuro</a></li>
+                {% endif %}
+                {% endblock %}
               <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                   Account
