@@ -67,7 +67,7 @@ def delete_score(usr):
 @user.route("set-theme/")
 def set_theme():
     if 'theme' in request.args:
-        resp = make_response()
+        resp = make_response(redirect(request.referrer))
         resp.set_cookie("theme", request.args['theme'], max_age=60*60*24)
         return resp
 
