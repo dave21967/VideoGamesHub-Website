@@ -11,12 +11,12 @@
       font-family: BoldHack;
       src: url("{{url_for('static', filename='fonts/Hack-Bold.ttf')}}");
     }
-    #icon {
+    .icon {
       width: 60px;
       position: relative;
       left: -10px;
     }
-    #date-icon {
+    .date-icon {
       width: 40px;
     }
     .article-img {
@@ -43,12 +43,12 @@
         position: relative;
         left: 1%;
       }
-      #icon {
+      .icon {
         width: 40px;
         position: relative;
         left: -5px;
       }
-      #date-icon {
+      .date-icon {
         width: 30px;
       }
       #details {
@@ -78,11 +78,11 @@
               <img class="article-img" src="{{url_for('static', filename='uploads/'+row.immagini)}}">
             </div>
             <div id="details" class="col-sm">
-              <a style="color: black;" href="/articles/view/{{row.slug}}"><h2 style="font-family: Hack;" >{{row.titolo}}</h2></a>
+              <a class="post-title" style="color: black;" href="/articles/view/{{row.slug}}"><h2 style="font-family: Hack;" >{{row.titolo}}</h2></a>
               {{row.contenuto|truncate(20)|safe}}
               <p id="label">Categoria: {{row.categoria}}<br>
-              <img id="date-icon" src="{{url_for('static', filename='images/icons/date_icon.png')}}"> {{row.data_pubblicazione}}<br>
-              <img id="icon" src="{{url_for('static', filename='images/icons/views_icon.png')}}"> {{row.visualizzazioni}}</p>
+              <img class="date-icon" src="{{url_for('static', filename='images/icons/date_icon.png')}}"> {{row.data_pubblicazione}}<br>
+              <img class="icon" src="{{url_for('static', filename='images/icons/views_icon.png')}}"> {{row.visualizzazioni}}</p>
             </div>
           </div>
         </div>

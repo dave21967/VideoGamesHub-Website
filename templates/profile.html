@@ -2,6 +2,10 @@
 {% block head %}
   {{super()}}
   <title>{% block title %}Profilo{% endblock %}</title>
+  <script src="{{url_for('static', filename='javascript/jquery-3.3.1.js/')}}">
+  </script>
+  <script src="{{url_for('static', filename='javascript/set_theme.js/')}}">
+  </script>
 {% endblock %}
 {% block menu %}
     {{super()}}
@@ -52,5 +56,13 @@
         </div>
       </div>
     </div>
+  </div>
+  <div class="form-check form-switch">
+    {% if 'theme' in request.cookies and request.cookies['theme'] == 'dark'%}
+      <input class="form-check-input" onchange="setTheme(this.checked);" checked="true" type="checkbox" id="switch">
+    {% else %}
+      <input class="form-check-input" onchange="setTheme(this.checked);" type="checkbox" id="switch">
+    {% endif %}
+    <label class="form-check-label" for="flexSwitchCheckDefault">Tema scuro</label>
   </div>
 {% endblock %}

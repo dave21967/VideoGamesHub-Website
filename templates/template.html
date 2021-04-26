@@ -6,9 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>VideoGamesHub - {% block title %}{% endblock %}</title>
     <link rel="icon" href="{{url_for('static', filename='images/VHLOGO.png')}}">
-    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script type="text/javascript" src="{{url_for('static', filename='javascript/jquery-3.3.1.js')}}"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js" integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous"></script>
+    <script src="{{url_for('static', filename='javascript/set_theme.js/')}}"></script>
     {% endblock %}
 </head>
 <body>
@@ -84,17 +85,21 @@
           </div>
         </div>
         {% block searchbar %}
-          <form class="d-flex" action="/articles/1" method="GET">
+          <form onchange="search()" class="d-flex" action="/articles/1" method="GET">
             <input class="form-control me-2" type="search" name="titolo" placeholder="Cerca articolo" aria-label="Cerca">
-            <button class="btn btn-outline-light" type="submit">Cerca</button>
+            <button class="btn btn-outline-light" id="submit" type="submit">Cerca</button>
           </form>
         {% endblock %}
-      </div>
+      </div><br>
     </nav>
+    <div id="searchbar">
+
+    </div>
       {% endblock %}
       {% block content %}
         <div id="content" class="container">
         </div>
       {% endblock %}
+      <script src="{{url_for('static', filename='javascript/search.js')}}"></script>
 </body>
 </html>
