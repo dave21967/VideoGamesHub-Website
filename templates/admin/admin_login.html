@@ -1,0 +1,57 @@
+{% extends "template.html" %}
+{% block head %}
+  {{super()}}
+  <title>{% block title %}Accedi admin{% endblock %}</title>
+  <style>
+    #buttonSend {
+      width: 40%;
+    }
+    #textInput {
+      width: 40%;
+    }
+    form {
+      padding-left: 35%;
+    }
+    h1 {
+      padding-left: 35%;
+    }
+    #alert {
+      width: 50%;
+    }
+    @media only screen and (max-width: 600px) {
+      #buttonSend {
+        width: 100%;
+      }
+      #textInput {
+        width: 100%;
+      }
+      form {
+        padding-left: 0%;
+      }
+      h1 {
+        padding-left: 0%;
+      }
+      #alert {
+        width: 100%;
+      }
+    }
+  </style>
+{% endblock %}
+{% block menu %}
+  {{super()}}
+{% endblock %}
+{% block content %}
+  {{super()}}
+  <h1>Accedi amministratore</h1><br><br><br><br>
+  <form method="POST">
+    <input type="text" name="username" class="form-control" id="textInput" placeholder="Username"><br>
+    <input type="password" name="password" class="form-control" id="textInput" placeholder="Password"><br>
+    <input type="submit" class="btn btn-dark" id="buttonSend" value="Accedi"><br>
+    {% if error %}
+      <div id="alert" class="alert alert-danger alert-dismissible fade show" role="alert">
+        {{error}}
+        <button class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    {% endif %}
+  </form>
+{% endblock %}

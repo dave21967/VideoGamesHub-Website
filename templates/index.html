@@ -1,0 +1,120 @@
+{% extends "template.html" %}
+{% block head %}
+    {{super()}}
+    <title>{% block title %}Home {% endblock %}</title>
+    <link rel="stylesheet" href="{{url_for('static', filename='css/slider.css')}}">
+    <style>
+        body {
+            background-image: url("{{url_for('static', filename='images/grafica fondo.jpg')}}");
+            background-size: 100%;
+            color: white;
+        }
+        @font-face {
+            font-family: Hack;
+            src: url("{{url_for('static', filename='fonts/Hack-Regular.ttf')}}");
+        }
+        h1 {
+            font-family: Impact;
+            text-align: center;
+        }
+        h5 {
+            font-family: Hack;
+            text-align: center;
+        }
+        #txt-area {
+            width: 30%;
+        }
+        #form-domande {
+            position: relative;
+            left: 33%;
+        }
+        #insta-logo {
+            position: relative;
+            left: 30%;
+            width: 10%;
+        }
+        #send-btn {
+            position: relative;
+            left: 13%;
+        }
+        #pint-logo {
+            position: relative;
+            left: 35.5%;
+            width: 5%;
+        }
+        #twitch-logo {
+            position: relative;
+            left: 43%;
+            width: 5%;
+        }
+        #sliderImg {
+            width: 100%;
+            height: 800px;
+        }
+        @media only screen and (max-width: 600px) {
+            #insta-logo {
+                position: relative;
+                left: 10%;
+                width: 30%;
+            }
+            #pint-logo {
+                position: relative;
+                left: 13%;
+                width: 15%;
+            }
+            #twitch-logo {
+                position: relative;
+                left: 24%;
+                width: 15%;
+            }
+            #txt-area {
+                width: 100%;
+            }
+            #send-btn {
+                position: relative;
+                left: 0%;
+            }
+            #form-domande {
+                position: relative;
+                left: 0%;
+            }
+            #sliderImg {
+                width: 100%;
+                height: 300px;
+            }
+        }
+    </style>
+{% endblock %}
+{% block menu %}
+    {{super()}}
+{% endblock %}
+{% block content %}
+    {{super()}}
+    <b><h1 class="index">Home</h1></b>
+    <h5 class="index">
+        Once upon a time, in a galaxy far far away…. ehm ok.<br>
+        Ben arrivati, sono un ne…ehm<br>
+        appassionato di videogiochi e con questo sito spero di condividere<br>
+        con voi i miei progetti e le curiosità sui giochi più conosciuti  <br>
+        (ma anche quelli meno noti).<br>
+        Per altre info cercate un po’ sul sito, buon giro!<br>
+        E seguitemi sui social 🙂<br>
+    </h5>
+    <a href="https://www.instagram.com/videogameshub.it/"><img id="insta-logo" src="{{url_for('static', filename='images/instagram.png')}}"></a>
+    <a href="https://www.pinterest.it/Johnny_pixelart_01/videogameshub/"><img id="pint-logo" src="{{url_for('static', filename='images/pinterest.png')}}"></a>
+    <a href="https://www.twitch.tv/videogameshub_"><img id="twitch-logo" src="{{url_for('static', filename='images/twitch.png')}}"></a>
+    <p style="font-family: Hack; text-align: center;" class="index">Preview</p>
+    <div class="slider">
+        <img class="slider-image" src="{{url_for('static', filename='images/slider/Grafica.jpeg')}}">
+        <img class="slider-image" src="{{url_for('static', filename='images/slider/MenuBg.png')}}">
+    </div>
+
+    <form id="form-domande" method="POST">
+    <div class="mb-3">
+        <label for="exampleFormControlTextarea1" class="form-label index">Per suggerimenti e richieste:</label>
+        <textarea class="form-control" name="question" id="txt-area" rows="3"></textarea><br>
+        <input id="send-btn" type="submit" class="btn btn-dark" value="Invia">
+    </div>
+    </form>
+    <script src="{{url_for('static', filename='javascript/slider_controller.js')}}"></script>
+{% endblock %}

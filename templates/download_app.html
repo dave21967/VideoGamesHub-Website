@@ -1,0 +1,41 @@
+{% extends "template.html" %}
+{% block head %}
+    {{super()}}
+    <title>{% block title %}VGH App{% endblock %}</title>
+    <style>
+        #logo {
+            height: 400px;
+            width: 400px;
+            position: relative;
+            left: 35%;
+        }
+        #downloadBtn {
+            position: relative;
+            left: 45%;
+        }
+        @media only screen and (max-width: 600px) {
+            #logo {
+                height: 200px;
+                width: 200px;
+                position: relative;
+                left: 20%;
+            }
+            #downloadBtn {
+                position: relative;
+                left: 35%;
+            }
+        }
+    </style>
+{% endblock %}
+{% block menu %}
+    {{super()}}
+{% endblock %}
+{% block content %}
+    {{super()}}
+    <h1 style="text-align: center;">
+        Scarica ora la nostra app<br>
+        per rimanere sempre aggiornato.
+    </h1>
+    <img id="logo" src="{{url_for('static', filename='images/VHLOGO.png')}}"><br>
+    <a id="downloadBtn" href="{{url_for('download')}}"><button class="btn btn-secondary">Download</button></a>
+{% endblock %}

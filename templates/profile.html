@@ -1,0 +1,60 @@
+{% extends "template.html" %}
+{% block head %}
+  {{super()}}
+  <title>{% block title %}Profilo{% endblock %}</title>
+  <script src="{{url_for('static', filename='javascript/jquery-3.3.1.js/')}}">
+  </script>
+  <script src="{{url_for('static', filename='javascript/set_theme.js/')}}">
+  </script>
+{% endblock %}
+{% block menu %}
+    {{super()}}
+    {% block dropdown_content %}
+      <ul class="dropdown-menu">
+        {% if name != "" %}
+          <li><a class="dropdown-item" href="/user/{{name}}/myProfile">{{name}}</a></li>
+          <li><a class="dropdown-item" href="{{url_for('logout')}}">Esci</a></li>
+          <li><a class="dropdown-item" href="{{url_for('admin.index')}}">Pannello di controllo</a></li>
+          <li><a class="dropdown-item" href="/user/{{session['username']}}/scoreboard">Visualizza punteggi</a></li>
+        {% else %}
+          <li><a class="dropdown-item" href="{{url_for('login')}}">Accedi</a></li>
+          <li><a class="dropdown-item" href="{{url_for('signup')}}">Registrati</a></li>
+          <li><a class="dropdown-item" href="{{url_for('admin.dashboard')}}">Pannello di controllo</a></li>
+          <li class="dropdown-divider"></li>
+          <li><a class="dropdown-item" href="#">Privacy</a></li>
+        {% endif %}
+      </ul>
+    {% endblock %}
+{% endblock %}
+{% block content %}
+  {{super()}}
+  <h1>Mio Profilo - {{username}}</h1>
+  <h2 style="text-align: center;">Post salvati</h2>
+  {% for p in posts %}
+      <a href="/articles/view/{{p.articolo}}"><h5 style="text-align: center;">{{p.articolo}}</h5></a>
+  {% endfor %}
+  <button class="btn btn-outline-dark" data-bs-toggle="modal" data-bs-target="#exampleModal">Salva punteggio</button>
+  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Carica nuovo file</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form method="GET" action="/user/{{session['username']}}/save-score" enctype="multipart/form-data">
+              <input type="number" class="form-control" name="score" placeholder="Punteggio"><br>
+              Gioco
+              <select name="titolo_gioco">
+                {% for g in games %}
+                  <option value="{{g.titolo}}">{{g.titolo}}</option>
+                {% endfor %}
+              </select>
+              <input type="submit" class="btn btn-dark" value="Conferma">
+              <input type="button" class="btn btn-secondary" value="Annulla" data-bs-dismiss="modal">
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

@@ -1,0 +1,37 @@
+{% extends "template.html" %}
+
+{% block head %}
+  {{super()}}
+  <title>{% block title %}Contatti{% endblock %}</title>
+{% endblock %}
+{% block menu %}
+  {{super()}}
+  {% block dropdown_content %}
+      <ul class="dropdown-menu">
+        {% if session %}
+          <li><a class="dropdown-item" href="/user/{{name}}/myProfile">{{name}}</a></li>
+          <li><a class="dropdown-item" href="{{url_for('logout')}}">Esci</a></li>
+          <li><a class="dropdown-item" href="{{url_for('admin.index')}}">Pannello di controllo</a></li>
+        {% else %}
+          <li><a class="dropdown-item" href="{{url_for('login')}}">Accedi</a></li>
+          <li><a class="dropdown-item" href="{{url_for('signup')}}">Registrati</a></li>
+          <li><a class="dropdown-item" href="{{url_for('admin.dashboard')}}">Pannello di controllo</a></li>
+          <li class="dropdown-divider"></li>
+          <li><a class="dropdown-item" href="#">Privacy</a></li>
+        {% endif %}
+      </ul>
+    {% endblock %}
+{% endblock %}
+{% block content %}
+  {{ super() }}
+<h1>CONTATTI</h1>
+<h3>Chi sono?</h3>
+<p>
+    Sono Davide Costantini, un ragazzo di 19 anni appassionato di videogiochi.<br>
+    Sono uno studente di informatica al IIS. Corni di Modena e questo e&grave;<br>
+    il mio sito web.
+</p>
+<h3>Contatti</h3>
+  <p>Email: videogameshub01@gmail.com</p>
+  <p>Instagram: videogameshub.it</p>
+{% endblock %}

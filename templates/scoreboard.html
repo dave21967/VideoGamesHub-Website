@@ -1,0 +1,45 @@
+{% extends "template.html" %}
+{% block head %}
+    {{super()}}
+    <title>{% block title %}{{super()}}Tabella punteggi{% endblock %}</title>
+{% endblock %}
+{% block menu %}
+    {{super()}}
+    {% block dropdown_content %}
+      <ul class="dropdown-menu">
+        {% if "username" in session %}
+          <li><a class="dropdown-item" href="/user/{{session['username']}}/myProfile">{{session['username']}}</a></li>
+          <li><a class="dropdown-item" href="{{url_for('logout')}}">Esci</a></li>
+          <li><a class="dropdown-item" href="{{url_for('admin.index')}}">Pannello di controllo</a></li>
+          <li><a class="dropdown-item" href="/user/{{session['username']}}/scoreboard">Visualizza punteggi</a></li>
+        {% else %}
+          <li><a class="dropdown-item" href="{{url_for('login')}}">Accedi</a></li>
+          <li><a class="dropdown-item" href="{{url_for('signup')}}">Registrati</a></li>
+          <li><a class="dropdown-item" href="{{url_for('admin.dashboard')}}">Pannello di controllo</a></li>
+          <li class="dropdown-divider"></li>
+          <li><a class="dropdown-item" href="#">Privacy</a></li>
+        {% endif %}
+      </ul>
+    {% endblock %}
+{% endblock %}
+{% block content %}
+    {{super()}}
+    <table class="table">
+        <tr class="table-dark">
+            <th>Nome utente</th>
+            <th>Titolo gioco</th>
+            <th>Punteggio ottenuto</th>
+            <th></th>
+        </tr>
+        {% for s in scores %}
+            <tr class="table-light">
+                <td>{{s.nome_utente}}</td>
+                <td>{{s.titolo_gioco}}</td>
+                <td>{{s.punteggio}}</td>
+                {% if s.nome_utente == session['username'] %}
+                    <td><a href="/user/{{session['username']}}/delete-score"><button class="btn btn-danger">Cancella</button></a></td>
+                {% endif %}
+            </tr>
+        {% endfor %}
+    </table>
+{% endblock %}

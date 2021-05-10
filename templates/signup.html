@@ -1,0 +1,70 @@
+{% extends "template.html" %}
+{% block head %}
+  {{super()}}
+  <title>{% block title %}Registrati{% endblock %}</title>
+  <style>
+    #buttonSend {
+      width: 40%;
+    }
+    #textInput-email {
+      width: 40%;
+    }
+    #textInput-username {
+      width: 40%;
+    }
+    #textInput-password {
+      width: 40%;
+    }
+    h1 {
+      padding-left: 35%;
+    }
+    
+    #alert {
+      width: 50%;
+    }
+    @media only screen and (max-width: 600px) {
+      #buttonSend {
+        width: 100%;
+      }
+      #textInput {
+        width: 100%;
+      }
+      form {
+        padding-left: 0%;
+      }
+      h1 {
+        padding-left: 0%;
+      }
+      #alert {
+        width: 100%;
+      }
+    }
+  </style>
+{% endblock %}
+{% block menu %}
+  {{super()}}
+{% endblock %}
+{% block content %}
+  {{super()}}
+  <h1>Accedi - Registrati</h1><br><br><br><br>
+  <form onload="animateForm()" onchange="checkUsers()" id="form" method="POST">
+    <input id="textInput-email" type="email" class="form-control" name="email" placeholder="Email"><br>
+    <input id="textInput-username" type="text" class="form-control" name="username" placeholder="Username"><br>
+    <input id="textInput-password" type="password" class="form-control" name="password" placeholder="Password"><br>
+    <input id="buttonSend" type="submit" class="btn btn-dark" value="Registrati"><br>
+    <a href="{{url_for('login')}}">Hai già un account?</a>
+    {% if error %}
+      <div id="alert" class="alert alert-danger alert-dismissible fade show" role="alert">
+        {{error}}
+        <button class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    {% endif %}
+    <h3 style="color: red;" id="error"></h3>
+  </form>
+  <script type="text/javascript" src="{{url_for('static', filename='javascript/animate_form.js')}}">
+  </script>
+  <script type="text/javascript" src="{{url_for('static', filename='javascript/jquery-3.3.1.js')}}"></script>
+  <script type="text/javascript" src="{{url_for('static', filename='javascript/signup.js')}}">
+    
+  </script>
+{% endblock %}

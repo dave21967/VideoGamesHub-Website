@@ -1,0 +1,33 @@
+{% extends "template.html" %}
+{% block head %}
+  {{super()}}
+  <title>{% block title %}Aggiungi articolo{% endblock %}</title>
+  <style>
+    #form {
+      position: relative;
+      left: 20%;
+    }
+  </style>
+{% endblock %}
+{% block menu %}
+  {{super()}}
+{% endblock %}
+{% block content %}
+  {{super()}}
+  <div id="form" class="container-fluid">
+    <h1>Aggiungi articolo</h1>
+    <h3>Qui puoi aggiungere un nuovo articolo al tuo blog.</h3><br>
+    <form method="POST" enctype="multipart/form-data">
+      <input style="width: 50%;" placeholder="Titolo" class="form-control" type="text" name="titolo"><br>
+      <textarea style="width: 50%;" placeholder="Contenuto" class="form-control" rows="10" name="contenuto"></textarea><br>
+      <input style="width: 50%;" class="form-control" type="file" accept="images/*" name="images"><br>
+      <input style="width: 50%;" placeholder="Anteprima articolo" class="form-control" type="text" name="anteprima"><br>
+      <select style="width: 50%;" name="categoria" class="form-select">
+        <option selected>Seleziona</option>
+        <option value="videogiochi">Videogiochi</option>
+        <option value="notizie e curiosita">Notizie e curiosità</option>
+      </select><br>
+      <input type="submit" value="Pubblica articolo" class="btn btn-dark">
+    </form>
+  </div>
+{% endblock %}
