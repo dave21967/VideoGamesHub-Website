@@ -1,6 +1,5 @@
 from flask import render_template, request, redirect, url_for, session, send_file, make_response
 from smtplib import SMTP
-import sqlite3
 from datetime import *
 from admin import admin
 from videogames import games
@@ -14,6 +13,7 @@ app.register_blueprint(admin, url_prefix="/admin")
 app.register_blueprint(games, url_prefix="/games")
 app.register_blueprint(user, url_prefix="/user")
 app.register_blueprint(files, url_prefix="/files")
+
 
 @app.route("/", methods=["GET", "POST"])
 def index():
@@ -58,7 +58,7 @@ def login():
             session["username"] = username
             resp=make_response(redirect(url_for('index')))
             resp.set_cookie("username", username, max_age=60*60*24)
-            resp.set_cookie("permissions", "0", max_age=60*60*24)
+            resp.set_cookie("permissions", str(users.admin_permissions), max_age=60*60*24)
             return resp
         else:
             return render_template("login.html", error=f"Nessun utente trovato con il nome di{username}")
@@ -169,7 +169,7 @@ def download_app():
 
 @app.route("/download-app/download")
 def download():
-    return send_file("static/uploads/sfondo1.jpg", as_attachment=True)
+    return send_file("static/uploads/app/VGH.apk", as_attachment=True)
 
 @app.route("/privacy-policy/")
 def privacy():
@@ -177,4 +177,4 @@ def privacy():
 
 if __name__ == '__main__':
     db.create_all()
-    app.run(debug=True, host="0.0.0.0")
+    app.run(debug=True, host="0.0.0.0", ssl_context=('cert.pem', 'key.pem'))

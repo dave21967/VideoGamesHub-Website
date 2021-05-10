@@ -32,7 +32,7 @@ def index():
 
 @admin.route("/dashboard")
 def dashboard():
-    if request.cookies.get("username") and request.cookies.get('permissions') == '1':
+    if request.cookies.get("username") and request.cookies.get('permissions') == 'True':
         result = Utente.query.filter_by(admin_permissions=0).all()
         arts = Articolo.query.all()
         giochi = Gioco.query.all()
