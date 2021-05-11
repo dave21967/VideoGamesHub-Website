@@ -9,8 +9,6 @@ from model import Utente, db, app, Articolo, Commento, PostSalvato, Segnalazione
 from crypt import encrypt_password, check_password
 import os
 
-print("Ciao")
-
 app.register_blueprint(admin, url_prefix="/admin")
 app.register_blueprint(games, url_prefix="/games")
 app.register_blueprint(user, url_prefix="/user")
