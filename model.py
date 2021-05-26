@@ -2,8 +2,6 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from datetime import *
 from crypt import *
-from flask_migrate import Migrate, MigrateCommand
-from flask_script import Manager
 
 app = Flask(__name__, template_folder='templates', static_folder='static')
 app.secret_key = 'hello world!'
@@ -20,9 +18,6 @@ def generate_slug(string):
     return slug
 
 db = SQLAlchemy(app)
-migrate = Migrate(app, db)
-manager = Manager(app)
-manager.add_command('db', MigrateCommand)
 
 class Articolo(db.Model):
     __tablename__ = "articoli"
@@ -111,7 +106,3 @@ class Segnalazione(db.Model):
     def __init__(self, usr, txt):
         self.nome_utente = usr
         self.testo = txt
-
-
-if __name__ == '__main__':
-    manager.run()
