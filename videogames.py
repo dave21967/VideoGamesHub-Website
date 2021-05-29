@@ -2,11 +2,11 @@ from flask import Blueprint, render_template, session, redirect, url_for, curren
 import sqlite3
 from model import Articolo, Gioco
 import os
-
+#Sezione di download dei videogiochi
 games = Blueprint("games", __name__, template_folder="templates", static_folder="static")
 default_path = "./static/uploads/games/"
 
-
+#Qui l'utente può visualizzare e scaricare i giochi pubblicati sul sito.
 @games.route("/")
 def index():
     if request.args.get("filename"):

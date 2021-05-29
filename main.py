@@ -8,18 +8,18 @@ from user import user
 from model import Utente, db, app, Articolo, Commento, PostSalvato, Segnalazione
 from crypt import encrypt_password, check_password
 import os
-
+#Registro i vari blueprint aggiungendoli alla sezione principale (main)
 app.register_blueprint(admin, url_prefix="/admin")
 app.register_blueprint(games, url_prefix="/games")
 app.register_blueprint(user, url_prefix="/user")
 app.register_blueprint(files, url_prefix="/files")
 
-
+#La landing page/Home page del sito
 @app.route("/", methods=["GET", "POST"])
 def index():
     if request.method == "POST":
         question = request.form.get("question")
-        s=Segnalazione('',question)
+        s=Segnalazione('',question)#Nel caso un utente segnali un problema nel sito.
         db.session.add(s)
         db.session.commit()
         return render_template("index.html")
@@ -29,13 +29,15 @@ def index():
         else:
             return render_template("index.html")
 
+#Controllo gli IP unici che entrano nel sito
+#Per tenere traccia delle visite
 @app.before_request
 def after_request_func():
     if request.remote_addr not in app.config['HOSTS']:
         print(request.remote_addr)
         app.config['HOSTS'].append(request.remote_addr)
         app.config['VISITS'] += 1
-
+#Sezione dei contatti in cui sono presenti la mail e il contatto instagram
 @app.route("/contacts", methods=["GET", "POST"])
 def contacts():
     if request.method == "POST":
@@ -46,7 +48,7 @@ def contacts():
             return render_template("contacts.html", name=request.cookies.get("username"))
         else:
             return render_template("contacts.html")
-
+#Schermata di Login in cui l'utente può accedere al suo profilo personale
 @app.route("/login", methods=['POST','GET'])
 def login():
     if request.method == 'POST':
@@ -64,7 +66,7 @@ def login():
             return render_template("login.html", error=f"Nessun utente trovato con il nome di{username}")
     else:
         return render_template("login.html")
-
+#Con questa funzione cancello tutti i cookie e le variabili di sessione
 @app.route("/logout")
 def logout():
     session.pop("username", None)
@@ -73,7 +75,7 @@ def logout():
     resp.set_cookie("username", "", expires=0)
     resp.set_cookie("permissions", "", expires=0)
     return resp
-
+#Qui l'utente si può registrare e accedere alla newsletter
 @app.route("/signup", methods=['POST', 'GET'])
 def signup():
     if request.method == 'POST':
@@ -89,8 +91,8 @@ def signup():
                 db.session.commit()
                 mail = SMTP("smtp.gmail.com", 587)
                 mail.ehlo()
-                mail.starttls()
-                mail.login("videogameshub01@gmail.com", "Xcloseconnect68")
+                mail.starttls()#Quando un nuovo utente si registra invia una mail sia al nuovo utente che all'admin
+                mail.login("videogameshub01@gmail.com", "Xcloseconnect68")#la mail inviata al nuovo utente è una mail di benvenuto
                 mail.sendmail("videogameshub01@gmail.com", "davide.costantini2001@gmail.com", "Subject: Nuova iscrizione\n\nUn nuovo utente e' entrato nella community!\n"+username+"")
                 mail.sendmail("videogameshub01@gmail.com", email, "Subject: Benvenuto "+username+"!\n\nBenvenuto nella nostra community!!!")
                 mail.quit()
@@ -114,7 +116,8 @@ def check_users():
         resp = make_response("Ok")
         print(resp)
         return resp
-
+#Questa pagina permette di visualizzare il feed del blog
+#e i vari articoli
 @app.route("/articles/<page>", methods=["GET", "POST"])
 def articles(page):
     if request.args.get("titolo"):
@@ -126,14 +129,16 @@ def articles(page):
         return render_template("blog-feed.html", data=result, name=request.cookies.get("username"))
     else:
         return render_template("blog-feed.html", data=result, name="")
-
+#Questa l'avevo definita per la ricerca con AJAX per la search bar
+#Che poi non ho implementato
+#TODO searchbar dinamica con AJAX
 @app.route("/articles")
 def search_article():
     titolo = request.args["titolo"]
     result = Articolo.query.filter(Articolo.titolo.like(f"%{titolo}%")).first()
     if result:
         return make_response(result.slug)
-
+#Questa pagina mi permette di visualizzare i dettagli dei singoli articoli
 @app.route("/articles/view/<title>", methods=["GET", "POST"])
 def view_article(title):
     if request.method == "POST":
@@ -170,11 +175,12 @@ def download_app():
 @app.route("/download-app/download")
 def download():
     return send_file("static/uploads/app/VGH.apk", as_attachment=True)
-
+#La sezione della privacy policy non ancora implementata
+#TODO privacy policy
 @app.route("/privacy-policy/")
 def privacy():
     return "Questa è la sezione dedicata al GDPR"
 
 if __name__ == '__main__':
-    db.create_all()
-    app.run(debug=True, host="0.0.0.0", ssl_context=('cert.pem', 'key.pem'))
+    db.create_all()#Creo le tabelle nel database
+    app.run(debug=True, host="0.0.0.0", ssl_context=('cert.pem', 'key.pem'))#ssl context serve per inizializzare i certificati (Autofirmati)

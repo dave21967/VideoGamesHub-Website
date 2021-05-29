@@ -5,7 +5,8 @@ from datetime import *
 from admin import admin
 from videogames import games
 from model import Articolo, PostSalvato, Gioco, Punteggio, db
-
+#Sezione del profilo utente
+#Qui l'utente può gestire il suo profilo e visualizzare i post salvati e i suoi punteggi.
 user = Blueprint("user", __name__, static_folder="static", template_folder="templates")
 
 @user.route("/<usr>/myProfile", methods=["GET", "POST"])
@@ -24,7 +25,9 @@ def scoreboard(usr):
         return render_template("scoreboard.html", scores=scores)
     else:
         return redirect(url_for('login'))
-
+#<usr> indica il valore dell'url dinamico (In questo caso l'username)
+#Posso passare come parametro il nome utente che verrà poi visualizzato nell'url
+#senza passarlo come parametro del metodo GET.
 @user.route("<usr>/save-post/<post>")
 def save_post(usr, post):
     if "username" in session:
@@ -63,14 +66,14 @@ def delete_score(usr):
         Punteggio.query.filter_by(nome_utente=usr).delete()
         db.session.commit()
         return redirect(url_for('user.profile', usr=usr))
-
+#Grazie a questa funzione/richiesta posso impostare il tema del sito (Chiaro/Scuro)
 @user.route("set-theme/")
 def set_theme():
     if 'theme' in request.args:
         resp = make_response(redirect(request.referrer))
         resp.set_cookie("theme", request.args['theme'], max_age=60*60*24)
         return resp
-
+#Questa funzione mi serve poi per ottenere il cookie sul tema impostato dall'utente.
 @user.route("get_cookie/<cookie>")
 def get_cookie(cookie):
     if cookie in request.cookies:

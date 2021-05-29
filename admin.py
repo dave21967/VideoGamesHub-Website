@@ -6,13 +6,14 @@ from model import Articolo, Utente, Gioco, Segnalazione, db
 import os
 from datetime import datetime
 from crypt import encrypt_password, check_password
-
+#Sezione di amministrazione del sito
 admin = Blueprint("admin", __name__, template_folder="templates", static_folder="static")
 
+#uso il decoratore @admin per indicare la pagina del sito
 @admin.route("/", methods=['POST','GET'])
 def index():
-    if request.method == 'POST':
-        username = request.form['username']
+    if request.method == 'POST':#Controllo il metodo di richiesta se è POST
+        username = request.form['username'] #significa che l'utente ha effettuato il submit della form di login
         password = request.form['password']
         admins = Utente.query.filter_by(username=username, admin_permissions=1).first()
         if admins and check_password(password, admins.password):
@@ -29,7 +30,8 @@ def index():
         else:
             return render_template("admin/admin_login.html")
 
-
+#Pagina principale della schermata di amministrazione
+#In cui posso visualizzare gli articoli e i giochi pubblicati
 @admin.route("/dashboard")
 def dashboard():
     if request.cookies.get("username") and request.cookies.get('permissions') == 'True':
@@ -99,9 +101,9 @@ def edit_game(title):
             db.session.commit()
             return redirect(url_for("admin.dashboard"))
         else:
-            gioco = Gioco.query.filter_by(titolo=title).first()
-            return render_template("admin/edit_game.html", game=gioco)
-    else:
+            gioco = Gioco.query.filter_by(titolo=title).first()#Un esempio di query fatta con SQLAlchemy
+            return render_template("admin/edit_game.html", game=gioco)#Libreria ORM compatibile con Flask
+    else:#https://flask-sqlalchemy.palletsprojects.com/en/2.x/
         return redirect(url_for("admin.index"))
 
 @admin.route("/delete-article/<title>")

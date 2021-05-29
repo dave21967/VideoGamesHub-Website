@@ -5,7 +5,10 @@ from smtplib import SMTP
 from model import Articolo, Utente, Gioco
 import os
 from datetime import datetime
-
+#Sezione di gestione dei files
+#Posso caricare e cancellare files(immagini) da utilizzare poi all'interno degli articoli
+#Un Blueprint è un oggetto che mi permette di descrivere all'interno di files diversi
+#Le varie sezioni del sito. Un metodo per mantenere più pulito il codice.
 files = Blueprint("files", __name__, template_folder="templates", static_folder="static")
 
 @files.route("/")

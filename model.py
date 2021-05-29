@@ -1,24 +1,29 @@
+#Import delle librerie necessari a Flask https://flask.palletsprojects.com/en/2.0.x/
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from datetime import *
 from crypt import *
-
+#Creo l'applicazione
 app = Flask(__name__, template_folder='templates', static_folder='static')
 app.secret_key = 'hello world!'
-
+#Inizializzazione variabili del server
 app.config['UPLOADS'] = 'static/uploads/'
 app.config['GAMES-UPLOADS'] = "static/uploads/games/"
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///test.db"
 app.config['VISITS'] = 0
 app.config['HOSTS'] = []
-
+#Funzione per generare lo slug di ogni articolo (Titolo articolo -> titolo-articolo)
 def generate_slug(string):
     string.lower()
     slug=string.replace(" ", "-")
     return slug
 
+#Inizializzazione del Database (file SQLite3)
 db = SQLAlchemy(app)
 
+#Modello dell'articolo
+#Flask rispetta il Pattern MVC (Model-View-Control)
+#e apporta una piccola modifica chiamandolo (Model-View-Template)
 class Articolo(db.Model):
     __tablename__ = "articoli"
     titolo = db.Column("titolo", db.String(50), unique=True, primary_key=True)
