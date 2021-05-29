@@ -41,6 +41,7 @@
     {% if files %}
       {% for f in files %}
           <div id="image-block" class="col">
+            <h3>{{f}}</h3>
             <img id="image" src="{{url_for('static', filename='uploads/images/'+f)}}" alt="{{f}}"><br>
             <a id="deleteBtn" href="/files/delete/{{f}}"><button id="deleteBtn" class="btn btn-outline-danger">Cancella</button></a>
           </div>
