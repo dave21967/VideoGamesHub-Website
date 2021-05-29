@@ -39,8 +39,10 @@
 {% endblock %}
 {% block content %}
   {{super()}}
-  <h1>{{article.titolo}}</h1>
-  {{article.contenuto | safe}}<br>
+  <div style="text-align: center;">
+    <h1>{{article.titolo}}</h1>
+    {{article.contenuto | safe}}<br>
+  </div>
   {% if session %}
     {% if saved == "false" %}
       <a href="/user/{{session['username']}}/save-post/{{article.slug}}"><button class="btn btn-dark">Salva</button></a>
