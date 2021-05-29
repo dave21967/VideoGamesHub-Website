@@ -25,7 +25,7 @@ def index():
         else:
             return render_template("admin/admin_login.html", error=f"Errore: Nessun utente registrato come {username}")
     else:
-        if request.cookies.get("username") and request.cookies.get("permissions") == '1':
+        if request.cookies.get("username") and request.cookies.get("permissions") == 'True':
             return redirect(url_for("admin.dashboard"))
         else:
             return render_template("admin/admin_login.html")
@@ -53,14 +53,17 @@ def add_article():
             immagine.save(current_app.config['UPLOADS']+immagine.filename)
             db.session.add(art)
             users = Utente.query.filter_by(admin_permissions=0, newsletter=1).all()    
-            if len(users) > 0:
-                m = SMTP("smtp.gmail.com", 587)
-                m.ehlo()
-                m.starttls()
-                m.login("videogameshub01@gmail.com", "Xcloseconnect68")
-                for user in users:
-                    m.sendmail("videogameshub01@gmail.com", user.email, "Subject: Nuovo articolo\n\nE' stato pubblicato un nuovo articolo!\nGuardalo subito")
-                m.quit()
+            try:
+                if len(users) > 0:
+                    m = SMTP("smtp.gmail.com", 587)
+                    m.ehlo()
+                    m.starttls()
+                    m.login("videogameshub01@gmail.com", "Xcloseconnect68")
+                    for user in users:
+                        m.sendmail("videogameshub01@gmail.com", user.email, "Subject: Nuovo articolo\n\nE' stato pubblicato un nuovo articolo!\nGuardalo subito")
+                    m.quit()
+            except Exception as e:
+                print(e)
             db.session.commit()
             return redirect(url_for('admin.index'))
         except Exception as e:
